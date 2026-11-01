@@ -287,8 +287,8 @@
       return { ath, ev, cells, field: any.field, group: any.group, gender: genderOf(any), n: cells.filter(Boolean).length }; })
       .sort((a, b) => a.gender.localeCompare(b.gender) || eventOrder(a.ev) - eventOrder(b.ev) || b.n - a.n || a.ath.localeCompare(b.ath));
     const delta = (p, c) => { const d = c.value - p.value; const imp = c.field ? d > 0 : d < 0; const txt = c.field ? `${d > 0 ? "+" : ""}${d.toFixed(1)} in` : `${d > 0 ? "+" : ""}${d.toFixed(2)} s`; return `<span style="color:${d === 0 ? "#5d6b82" : imp ? "#17703d" : "#a33"}">${txt}</span>`; };
-    const lastName = (n) => /^(Boys|Girls)\b/.test(n) ? "~" + n : n.split(" ").pop();
-    const byAth = (a, b) => lastName(a.ath).localeCompare(lastName(b.ath)) || a.ath.localeCompare(b.ath);
+    const isRelay = (n) => /^(Boys|Girls)\b/.test(n); const lastName = (n) => n.split(" ").pop();
+    const byAth = (a, b) => isRelay(a.ath) - isRelay(b.ath) || lastName(a.ath).localeCompare(lastName(b.ath)) || a.ath.localeCompare(b.ath);
     const byEv = (a, b) => eventOrder(a.ev) - eventOrder(b.ev) || a.ev.localeCompare(b.ev);
     const sortTh = (key, label) => { const on = cmp.sortKey === key; const dir = on ? cmp.sortDir : "";
       return `<th aria-sort="${on ? (dir === "asc" ? "ascending" : "descending") : "none"}"><button type="button" class="th-sort${on ? " on" : ""}" data-sort="${key}" aria-label="Sort by ${label}${on ? (dir === "asc" ? ", ascending" : ", descending") : ""}">${label}<span class="sort-ind" aria-hidden="true">${on ? (dir === "asc" ? "▲" : "▼") : "↕"}</span></button></th>`; };
