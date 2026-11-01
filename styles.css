@@ -162,3 +162,7 @@ tr.past td{color:var(--muted)} tr.next td{background:#fbf5e2}
 @media (max-width:700px){.res-col{display:none}.res-inline{display:inline-flex}}
 @media (max-width:700px){#scheduleTable td:nth-child(4){white-space:normal;min-width:190px}#scheduleTable .res-inline{display:flex;width:fit-content;margin:5px 0 0}}
 @media (max-width:700px){#scheduleTable th:nth-child(2),#scheduleTable td:nth-child(2){display:none}}
+
+[data-tip]{cursor:help;-webkit-tap-highlight-color:transparent}[data-tip]:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.tip{position:absolute;z-index:1000;max-width:240px;background:var(--navy);color:#fff;border:1px solid var(--gold);border-radius:8px;padding:6px 10px;font:600 12px/1.35 Inter,system-ui,sans-serif;box-shadow:0 6px 18px rgba(11,31,58,.25);pointer-events:none}
+.tip[hidden]{display:none}

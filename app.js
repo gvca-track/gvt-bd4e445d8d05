@@ -25,7 +25,7 @@
   // Stable anchor for a meet panel, e.g. #meet-2025-kiowa-klassic
   const meetId = (name, se) => "meet-" + se + "-" + String(name).replace(/\s+20\d\d\s*$/, "").toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const initials = (n) => n.split(/\s+/).map((p) => p[0]).slice(0, 2).join("");
-  const tags = (r) => (r.qualified ? '<span class="tag q">Q</span>' : "") + (r.record ? '<span class="tag r">R</span>' : "") + (r.fat ? '<span class="tag a" title="Fully automatic timing">FAT</span>' : "");
+  const tags = (r) => (r.qualified ? '<span class="tag q" data-tip="Qualified" tabindex="0" role="button" aria-label="Q: Qualified">Q</span>' : "") + (r.record ? '<span class="tag r" data-tip="Record" tabindex="0" role="button" aria-label="R: Record">R</span>' : "") + (r.fat ? '<span class="tag a" data-tip="Fully automatic timing" tabindex="0" role="button" aria-label="FAT: Fully automatic timing">FAT</span>' : "");
   const markText = (m) => String(m).replace(/(\d)[aqQRM]+$/, "$1");
 
   // best mark per athlete+event (+season)
@@ -164,7 +164,7 @@
       <span class="count">${m.list.length} mark${m.list.length === 1 ? "" : "s"}</span>
       <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="table-wrap"><table><thead><tr><th>Event</th><th>Athlete</th><th>Mark</th><th>Place</th><th>Round</th><th>Wind</th></tr></thead><tbody>
-      ${m.list.map((r) => `<tr><td>${esc(r.event)}</td><td>${esc(r.athlete)}</td><td class="mark">${esc(markText(r.mark))}${tags(r)}${prSet.has(r) ? '<span class="pr-flag">PR</span>' : ""}</td><td>${esc(r.place) || "—"}</td><td>${esc(r.round)}</td><td>${esc(r.wind) || "—"}</td></tr>`).join("")}
+      ${m.list.map((r) => `<tr><td>${esc(r.event)}</td><td>${esc(r.athlete)}</td><td class="mark">${esc(markText(r.mark))}${tags(r)}${prSet.has(r) ? '<span class="pr-flag" data-tip="Personal record" tabindex="0" role="button" aria-label="PR: Personal record">PR</span>' : ""}</td><td>${esc(r.place) || "—"}</td><td>${esc(r.round)}</td><td>${esc(r.wind) || "—"}</td></tr>`).join("")}
       </tbody></table></div></details>`;
   }).join("") : "";
   $("#results").hidden = !meetsSorted.length;
@@ -314,4 +314,38 @@
     $("#standards").hidden = false;
   }
 
+})();
+
+// Accessible tooltips: hover/focus on desktop, tap on touch; delegated for dynamic content.
+(() => {
+  const tip = document.createElement("div");
+  tip.className = "tip"; tip.id = "gv-tip"; tip.setAttribute("role", "tooltip"); tip.hidden = true;
+  document.body.appendChild(tip);
+  let cur = null, pinned = false;
+  const show = (el) => {
+    cur = el; tip.textContent = el.dataset.tip; tip.hidden = false;
+    el.setAttribute("aria-describedby", "gv-tip");
+    const r = el.getBoundingClientRect(), t = tip.getBoundingClientRect();
+    let x = r.left + r.width / 2 - t.width / 2 + scrollX;
+    x = Math.max(scrollX + 6, Math.min(x, scrollX + document.documentElement.clientWidth - t.width - 6));
+    let y = r.top + scrollY - t.height - 8;
+    if (r.top - t.height - 8 < 0) y = r.bottom + scrollY + 8;
+    tip.style.left = x + "px"; tip.style.top = y + "px";
+  };
+  const hide = () => { if (cur) cur.removeAttribute("aria-describedby"); cur = null; pinned = false; tip.hidden = true; };
+  const find = (e) => e.target.closest && e.target.closest("[data-tip]");
+  document.addEventListener("mouseover", (e) => { const el = find(e); if (el && !pinned) show(el); });
+  document.addEventListener("mouseout", (e) => { const el = find(e); if (el && !pinned && !el.contains(e.relatedTarget)) hide(); });
+  document.addEventListener("focusin", (e) => { const el = find(e); if (el) show(el); });
+  document.addEventListener("focusout", (e) => { if (find(e) && !pinned) hide(); });
+  document.addEventListener("click", (e) => {
+    const el = find(e);
+    if (el) { if (pinned && cur === el) hide(); else { show(el); pinned = true; } }
+    else if (cur) hide();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") hide();
+    else if ((e.key === "Enter" || e.key === " ") && find(e)) { e.preventDefault(); show(find(e)); pinned = true; }
+  });
+  addEventListener("scroll", () => { if (cur && !pinned) hide(); else if (cur) show(cur); }, { passive: true });
 })();
