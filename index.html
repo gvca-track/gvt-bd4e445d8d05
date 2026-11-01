@@ -15,9 +15,6 @@
 <header class="hero">
   <nav class="topnav">
     <div class="brand"><span class="crest">GV</span><span>Golden View Track &amp; Field</span></div>
-    <div class="links">
-      <a href="#overview">Overview</a><a href="#prs">PR Board</a><a href="#athletes">Athletes</a><a href="#compare">Seasons</a><a href="#results">Results</a><a href="#schedule">Schedule</a>
-    </div>
   </nav>
   <div class="hero-inner">
     <p class="eyebrow">Golden View Classical Academy · Golden, Colorado</p>
@@ -30,6 +27,14 @@
     <div class="hero-meta"><span class="pill" id="seasonPill">Season</span><span class="updated" id="updated"></span></div>
   </div>
 </header>
+<nav class="secnav" id="secnav" aria-label="Sections">
+  <div class="secnav-inner">
+    <div class="secnav-links" id="secnavLinks">
+      <a href="#overview">Overview</a><a href="#prs">PR Board</a><a href="#athletes">Athletes</a><a href="#compare" data-compare>Seasons</a><a href="#results">Results</a><a href="#schedule">Schedule</a>
+    </div>
+    <div class="secnav-season" id="secnavSeason" role="radiogroup" aria-label="Season"></div>
+  </div>
+</nav>
 
 <main>
   <section id="overview" class="section">
@@ -48,6 +53,19 @@
 
   <section id="athletes" class="section">
     <div class="section-head"><div><p class="kicker">Roster</p><h2>Athlete Profiles</h2></div><span class="muted" id="athleteCount"></span></div>
+    <div class="ath-filters card" id="athFilters">
+      <div class="af-top">
+        <label class="af-search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" id="afName" placeholder="Search by name" aria-label="Search athletes by name" autocomplete="off"></label>
+        <button type="button" class="af-toggle" id="afToggle" aria-expanded="false" aria-controls="afBody">Filters<span class="af-badge" id="afBadge" hidden></span></button>
+      </div>
+      <div class="af-body" id="afBody">
+        <div class="af-field"><span class="af-label">Gender</span><div class="seg" id="afGender"></div></div>
+        <div class="af-field"><span class="af-label">Event group</span><select id="afGroup" aria-label="Event group"></select></div>
+        <div class="af-field"><span class="af-label">Grade</span><div class="seg" id="afGrade"></div></div>
+        <div class="af-field"><span class="af-label">Sort</span><select id="afSort" aria-label="Sort athletes"><option value="name">Name</option><option value="grade">Grade</option><option value="improved">Most improved</option></select></div>
+      </div>
+      <div class="af-foot"><span id="afCount" aria-live="polite"></span><button type="button" class="af-clear" id="afClear">Clear filters</button></div>
+    </div>
     <div id="athleteGrid" class="athlete-grid"></div>
   </section>
 

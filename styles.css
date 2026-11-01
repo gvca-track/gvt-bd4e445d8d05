@@ -101,3 +101,49 @@ tr.past td{color:var(--muted)} tr.next td{background:#fbf5e2}
 .season-seg button.active{background:var(--gold);color:var(--navy);box-shadow:0 4px 14px rgba(201,162,39,.35)}
 @media (max-width:560px){.season-switch{gap:8px}.season-seg{display:flex;width:100%}.season-seg button{flex:1;padding:9px 6px;font-size:17px}}
 .map-link{display:inline-flex;align-items:center;gap:5px;color:var(--navy);text-decoration:none;border-bottom:1px dotted currentColor}.map-link:hover{color:var(--gold)}
+
+/* Sticky section nav */
+.secnav{position:sticky;top:0;z-index:50;background:rgba(11,31,58,.92);-webkit-backdrop-filter:saturate(160%) blur(12px);backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid rgba(255,255,255,.08);transition:box-shadow .2s}
+.secnav.stuck{box-shadow:0 6px 20px rgba(11,31,58,.25)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.secnav{background:var(--navy)}}
+.secnav-inner{max-width:1180px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:16px;height:54px}
+.secnav-links{flex:1;min-width:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;mask-image:linear-gradient(90deg,#000 calc(100% - 24px),transparent)}
+.secnav-links::-webkit-scrollbar{display:none}
+.secnav-links a{flex:none;scroll-snap-align:start;text-decoration:none;color:rgba(255,255,255,.75);font:600 14px Inter,sans-serif;padding:8px 14px;border-radius:999px;white-space:nowrap;transition:background .15s,color .15s}
+.secnav-links a:hover{color:#fff;background:rgba(255,255,255,.08)}
+.secnav-links a.active{background:var(--gold);color:var(--navy)}
+.secnav-links a:focus-visible,.secnav-season button:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+.secnav-season{flex:none;display:inline-flex;gap:2px;padding:3px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}
+.secnav-season button{border:0;background:transparent;color:rgba(255,255,255,.8);font:600 13px Oswald,Inter,sans-serif;letter-spacing:.04em;padding:5px 10px;border-radius:7px;cursor:pointer}
+.secnav-season button:hover{color:#fff}
+.secnav-season button.active{background:var(--gold);color:var(--navy)}
+.section{scroll-margin-top:70px}
+#overview{scroll-margin-top:130px}
+@media (max-width:560px){.secnav-inner{padding:0 10px 0 8px;gap:8px;height:50px}.secnav-links a{padding:7px 11px;font-size:13.5px}.secnav-season button{padding:5px 7px;font-size:12px}.section{scroll-margin-top:62px}}
+@media (max-width:380px){.secnav-season{display:none}}
+
+/* Athlete filter bar */
+.ath-filters{padding:14px 16px;margin-bottom:18px;display:grid;gap:12px}
+.af-top{display:flex;gap:10px}
+.af-search{flex:1;display:flex;align-items:center;gap:8px;background:#f5f7fb;border:1px solid var(--border);border-radius:10px;padding:0 12px;color:var(--muted);transition:border-color .15s,box-shadow .15s}
+.af-search:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,39,.18);background:#fff}
+.af-search input{flex:1;border:0;background:transparent;font:500 14.5px Inter,sans-serif;color:var(--text);padding:11px 0;outline:0;min-width:0}
+.af-toggle{display:none;align-items:center;gap:6px;border:1px solid var(--border);background:#fff;border-radius:10px;font:600 14px Inter,sans-serif;color:var(--navy);padding:0 14px;cursor:pointer}
+.af-badge{background:var(--gold);color:var(--navy);border-radius:999px;font-size:11px;min-width:18px;height:18px;display:inline-grid;place-items:center;padding:0 5px}
+.af-body{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end}
+.af-field{display:grid;gap:5px}
+.af-label{font:700 11px Inter,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.ath-filters .seg{box-shadow:none}
+.ath-filters select{appearance:none;-webkit-appearance:none;border:1px solid var(--border);border-radius:10px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235d6b82' stroke-width='3'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;font:600 13px Inter,sans-serif;color:var(--navy);padding:9px 34px 9px 12px;min-height:38px;cursor:pointer}
+.ath-filters select:focus-visible,.af-clear:focus-visible,.af-toggle:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.af-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--border);padding-top:10px;font-size:13.5px;color:var(--muted)}
+.af-foot b{color:var(--navy)}
+.af-clear{border:0;background:transparent;font:600 13px Inter,sans-serif;color:var(--navy);cursor:pointer;padding:6px 10px;border-radius:8px}
+.af-clear:hover:not(:disabled){background:#f3f5f9}
+.af-clear:disabled{color:#b6bfcd;cursor:default}
+.athlete[hidden]{display:none}
+@media (max-width:700px){.af-toggle{display:inline-flex}.af-body{display:none}.ath-filters.open .af-body{display:grid;grid-template-columns:1fr;gap:12px}
+.ath-filters.open .af-body .seg{width:100%}.ath-filters.open .af-body .seg button{flex:1}.ath-filters select{width:100%}}
+#overview{margin-top:0;padding-top:28px}.hero-inner{padding-bottom:56px}
+.af-search input{width:100%}.ath-filters{min-width:0;max-width:100%}
+.af-badge[hidden],.secnav-season[hidden],.secnav-links a[hidden]{display:none}

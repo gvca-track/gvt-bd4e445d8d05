@@ -100,8 +100,10 @@
     const mine = curResults.filter((r) => r.athlete === a.name);
     const myBests = bests(mine);
     const evs = [...new Set(mine.map((r) => r.event))].sort((x, y) => eventOrder(x) - eventOrder(y));
+    const grpSet = [...new Set(mine.map((r) => r.group))].join("|");
+    let imp = 0; evs.forEach((e) => { const ps = mine.filter((r) => r.event === e).sort((x, y) => (x.date || "").localeCompare(y.date || "")); const b = myBests[a.name + "|" + e]; if (ps.length > 1 && ps[0].value) { const v = b.field ? (b.value - ps[0].value) / ps[0].value : (ps[0].value - b.value) / ps[0].value; imp = Math.max(imp, v); } });
     const chips = evs.map((e) => { const b = myBests[a.name + "|" + e]; return `<div class="chip">${esc(e)}<b>${esc(markText(b.mark))}</b></div>`; }).join("");
-    return `<article class="card athlete"><div class="ath-head"><div class="avatar">${esc(initials(a.name))}</div>
+    return `<article class="card athlete" data-name="${esc(a.name.toLowerCase())}" data-gender="${esc(a.gender)}" data-grade="${esc(a.grade)}" data-groups="${esc(grpSet)}" data-imp="${imp.toFixed(5)}" data-last="${esc(a.name.split(" ").pop().toLowerCase())}"><div class="ath-head"><div class="avatar">${esc(initials(a.name))}</div>
       <div><h3>${esc(a.name)}</h3><div class="ath-meta">${esc(a.gender)} · Grade ${esc(a.grade)} · ${mine.length} mark${mine.length === 1 ? "" : "s"} in ${esc(lastSeason)}</div></div></div>
       <div class="ath-prs">${chips || '<span class="muted">No marks yet</span>'}</div>
       ${evs.length ? `<div class="ev-tabs" data-i="${i}">${evs.map((e, j) => `<button class="${j === 0 ? "active" : ""}" data-e="${esc(e)}">${esc(e)}</button>`).join("")}</div><div class="chart-box"><canvas id="ch${i}"></canvas></div>` : ""}
@@ -138,6 +140,7 @@
   document.querySelectorAll(".ev-tabs").forEach((t) => {
     t.onclick = (e) => { const b = e.target.closest("button"); if (!b) return; t.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b)); drawChart(+t.dataset.i, b.dataset.e); };
   });
+  applyAthFilters();
   const initCharts = () => document.querySelectorAll(".ev-tabs").forEach((t) => drawChart(+t.dataset.i, t.querySelector("button").dataset.e));
   if (window.Chart) initCharts(); else window.addEventListener("load", initCharts, { once: true });
 
@@ -173,11 +176,66 @@
         <td><b style="color:var(--navy)">${esc(m.name)}</b></td><td>${m.mapUrl ? `<a class="map-link" href="${esc(m.mapUrl)}" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>${esc(m.location || "Map")}</a>` : esc(m.location) || "TBA"}</td></tr>`).join("") + "</tbody>";
   }
   }
+  // Athlete filters (work on the current season's cards)
+  const af = { q: "", gender: "All", group: "All", grade: "All", sort: "name" };
+  function afSeg(el, opts, key) {
+    el.innerHTML = opts.map((o) => `<button type="button" data-v="${esc(o)}" class="${af[key] === o ? "active" : ""}" aria-pressed="${af[key] === o}">${esc(o)}</button>`).join("");
+    el.onclick = (e) => { const b = e.target.closest("button"); if (!b) return; af[key] = b.dataset.v; afSeg(el, opts, key); applyAthFilters(); };
+  }
+  function initAthFilters() {
+    afSeg($("#afGender"), ["All", "Girls", "Boys"], "gender");
+    afSeg($("#afGrade"), ["All", "9", "10", "11", "12"], "grade");
+    $("#afGroup").innerHTML = ["All", ...GROUPS].map((g) => `<option value="${esc(g)}">${g === "All" ? "All groups" : esc(g)}</option>`).join("");
+    $("#afName").addEventListener("input", (e) => { af.q = e.target.value.trim().toLowerCase(); applyAthFilters(); });
+    $("#afGroup").onchange = (e) => { af.group = e.target.value; applyAthFilters(); };
+    $("#afSort").onchange = (e) => { af.sort = e.target.value; applyAthFilters(); };
+    $("#afClear").onclick = () => { Object.assign(af, { q: "", gender: "All", group: "All", grade: "All", sort: "name" }); $("#afName").value = ""; $("#afGroup").value = "All"; $("#afSort").value = "name"; initSegs(); applyAthFilters(); };
+    const initSegs = () => { afSeg($("#afGender"), ["All", "Girls", "Boys"], "gender"); afSeg($("#afGrade"), ["All", "9", "10", "11", "12"], "grade"); };
+    $("#afToggle").onclick = () => { const f = $("#athFilters"); const open = !f.classList.contains("open"); f.classList.toggle("open", open); $("#afToggle").setAttribute("aria-expanded", open); };
+  }
+  function applyAthFilters() {
+    const cards = [...document.querySelectorAll("#athleteGrid .athlete")];
+    let shown = 0;
+    const sorted = [...cards].sort((x, y) => af.sort === "grade" ? (+y.dataset.grade || 0) - (+x.dataset.grade || 0) || x.dataset.last.localeCompare(y.dataset.last)
+      : af.sort === "improved" ? (+y.dataset.imp) - (+x.dataset.imp) : x.dataset.last.localeCompare(y.dataset.last) || x.dataset.name.localeCompare(y.dataset.name));
+    sorted.forEach((c, k) => {
+      const ok = (!af.q || c.dataset.name.includes(af.q)) && (af.gender === "All" || c.dataset.gender === af.gender)
+        && (af.grade === "All" || c.dataset.grade === af.grade) && (af.group === "All" || c.dataset.groups.split("|").includes(af.group));
+      c.hidden = !ok; c.style.order = k; if (ok) shown++;
+    });
+    const active = [af.q, af.gender !== "All", af.group !== "All", af.grade !== "All"].filter(Boolean).length;
+    $("#afCount").innerHTML = `Showing <b>${shown}</b> of ${cards.length} athletes`;
+    $("#afClear").disabled = !active && af.sort === "name";
+    const badge = $("#afBadge"); badge.hidden = !active; badge.textContent = active;
+    let empty = $("#afEmpty");
+    if (!shown && cards.length) { if (!empty) { empty = document.createElement("div"); empty.id = "afEmpty"; empty.className = "card empty"; empty.style.gridColumn = "1/-1"; $("#athleteGrid").append(empty); } empty.textContent = "No athletes match these filters."; empty.hidden = false; }
+    else if (empty) empty.hidden = true;
+    window.dispatchEvent(new Event("resize"));
+  }
+  initAthFilters();
+
+  // Sticky section nav: active-section highlight + compact season selector
+  const navLinks = [...document.querySelectorAll("#secnavLinks a")];
+  function updateActive() {
+    const y = ($("#secnav").offsetHeight || 0) + 48;
+    let cur = null;
+    navLinks.forEach((a) => { const s = document.querySelector(a.getAttribute("href")); a.hidden = !s || s.hidden; });
+    navLinks.forEach((a) => { const s = document.querySelector(a.getAttribute("href")); if (s && !s.hidden && s.getBoundingClientRect().top <= y) cur = a; });
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) cur = navLinks.filter((a) => !document.querySelector(a.getAttribute("href")).hidden).pop();
+    navLinks.forEach((a) => { const on = a === cur; a.classList.toggle("active", on); if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
+    if (cur && cur !== updateActive.last) { updateActive.last = cur; const w = $("#secnavLinks"); const l = cur.offsetLeft - 12; if (l < w.scrollLeft || cur.offsetLeft + cur.offsetWidth > w.scrollLeft + w.clientWidth) w.scrollTo({ left: l, behavior: "smooth" }); }
+    $("#secnav").classList.toggle("stuck", $("#secnav").getBoundingClientRect().top <= 0 && window.scrollY > 0);
+  }
+  let ticking = false;
+  window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; updateActive(); }); } }, { passive: true });
+  window.addEventListener("resize", () => requestAnimationFrame(updateActive));
+  $("#secnavSeason").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) setSeason(b.dataset.v, true); });
   // Season selector (hero): segmented buttons built from data.json seasons; choice kept in ?season=
   function renderSeasonSel() {
     const el = $("#seasonSelect"); if (!el) return;
     el.hidden = seasons.length < 2;
     el.innerHTML = seasons.map((se) => `<button type="button" role="radio" aria-checked="${se === curSeason}" data-v="${esc(se)}" class="${se === curSeason ? "active" : ""}">${esc(se)}</button>`).join("");
+    const mini = $("#secnavSeason"); if (mini) { mini.hidden = seasons.length < 2; mini.innerHTML = el.innerHTML; }
   }
   function setSeason(se, push) {
     if (!seasons.includes(se) || (se === curSeason && push)) return;
@@ -190,6 +248,7 @@
   $("#seasonSelect")?.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) setSeason(b.dataset.v, true); });
   window.addEventListener("popstate", () => { curSeason = fromUrl(); renderSeasonSel(); render(); });
   renderSeasonSel(); render();
+  requestAnimationFrame(updateActive);
   // Season comparison: every season side by side (e.g. 2024 / 2025 / 2026)
   if (seasons.length > 1) {
     const bySeason = Object.fromEntries(seasons.map((se) => [se, bests(valid.filter((r) => r.season === se))]));
