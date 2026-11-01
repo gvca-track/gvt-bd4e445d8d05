@@ -20,6 +20,8 @@
   const eventOrder = (e) => { const g = [...GROUPS, "Other"].indexOf(groupOf(e)); const n = parseInt(e) || 0; return g * 100000 + n; };
   function groupOf(e) { const r = results.find((x) => x.event === e); return r ? r.group : "Other"; }
   const fmtDate = (iso, opts) => iso ? new Date(iso + "T12:00:00").toLocaleDateString("en-US", { timeZone: TZ, ...opts }) : "";
+  // Grade for a given season, from build_data.py's per-season map (blank when unknown or outside 9-12)
+  const gradeIn = (a, se) => (a && a.gradeBySeason ? a.gradeBySeason[se] || "" : "");
   const initials = (n) => n.split(/\s+/).map((p) => p[0]).slice(0, 2).join("");
   const tags = (r) => (r.qualified ? '<span class="tag q">Q</span>' : "") + (r.record ? '<span class="tag r">R</span>' : "") + (r.fat ? '<span class="tag a" title="Fully automatic timing">FAT</span>' : "");
   const markText = (m) => String(m).replace(/(\d)[aqQRM]+$/, "$1");
@@ -100,11 +102,12 @@
     const mine = curResults.filter((r) => r.athlete === a.name);
     const myBests = bests(mine);
     const evs = [...new Set(mine.map((r) => r.event))].sort((x, y) => eventOrder(x) - eventOrder(y));
+    const gr = gradeIn(a, curSeason);
     const grpSet = [...new Set(mine.map((r) => r.group))].join("|");
     let imp = 0; evs.forEach((e) => { const ps = mine.filter((r) => r.event === e).sort((x, y) => (x.date || "").localeCompare(y.date || "")); const b = myBests[a.name + "|" + e]; if (ps.length > 1 && ps[0].value) { const v = b.field ? (b.value - ps[0].value) / ps[0].value : (ps[0].value - b.value) / ps[0].value; imp = Math.max(imp, v); } });
     const chips = evs.map((e) => { const b = myBests[a.name + "|" + e]; return `<div class="chip">${esc(e)}<b>${esc(markText(b.mark))}</b></div>`; }).join("");
-    return `<article class="card athlete" data-name="${esc(a.name.toLowerCase())}" data-gender="${esc(a.gender)}" data-grade="${esc(a.grade)}" data-groups="${esc(grpSet)}" data-imp="${imp.toFixed(5)}" data-last="${esc(a.name.split(" ").pop().toLowerCase())}"><div class="ath-head"><div class="avatar">${esc(initials(a.name))}</div>
-      <div><h3>${esc(a.name)}</h3><div class="ath-meta">${esc(a.gender)} · Grade ${esc(a.grade)} · ${mine.length} mark${mine.length === 1 ? "" : "s"} in ${esc(lastSeason)}</div></div></div>
+    return `<article class="card athlete" data-name="${esc(a.name.toLowerCase())}" data-gender="${esc(a.gender)}" data-grade="${esc(gr)}" data-groups="${esc(grpSet)}" data-imp="${imp.toFixed(5)}" data-last="${esc(a.name.split(" ").pop().toLowerCase())}"><div class="ath-head"><div class="avatar">${esc(initials(a.name))}</div>
+      <div><h3>${esc(a.name)}</h3><div class="ath-meta">${esc(a.gender)}${gr ? " · Grade " + esc(gr) : ""} · ${mine.length} mark${mine.length === 1 ? "" : "s"} in ${esc(lastSeason)}</div></div></div>
       <div class="ath-prs">${chips || '<span class="muted">No marks yet</span>'}</div>
       ${evs.length ? `<div class="ev-tabs" data-i="${i}">${evs.map((e, j) => `<button class="${j === 0 ? "active" : ""}" data-e="${esc(e)}">${esc(e)}</button>`).join("")}</div><div class="chart-box"><canvas id="ch${i}"></canvas></div>` : ""}
     </article>`;

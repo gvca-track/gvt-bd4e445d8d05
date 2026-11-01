@@ -122,6 +122,23 @@ def main():
             "season": season, "enteredBy": r.get("Entered By", ""), "notes": r.get("Notes", ""),
         })
 
+    # Season-specific grades: grade_in_season = base_grade - (base_season - season).
+    # Base season comes from Roster Notes ("Grade as of 2026 (MileSplit)"); defaults to the latest season.
+    # A per-result "grade" field (MileSplit per-meet grade), if present, takes precedence.
+    all_seasons = sorted({season_year(r["season"]) for r in results if season_year(r["season"])})
+    for a in athletes:
+        m = re.search(r"as of (\d{4})", a.get("notes") or "")
+        base_season = int(m.group(1)) if m else (int(all_seasons[-1]) if all_seasons else None)
+        try: base = int(str(a.get("grade") or "").strip())
+        except ValueError: base = None
+        gmap = {}
+        for se in all_seasons:
+            per = [r.get("grade") for r in results if r["athlete"] == a["name"] and r["season"] == se and str(r.get("grade") or "").isdigit()]
+            g = int(per[0]) if per else (base - (base_season - int(se)) if base is not None and base_season else None)
+            if g is not None and 9 <= g <= 12: gmap[se] = str(g)
+        a["gradeBySeason"] = gmap
+        a["baseSeason"] = str(base_season) if base_season else ""
+
     out = {
         "team": "Golden View Classical Academy",
         "generated": datetime.now(ZoneInfo("America/Denver")).isoformat(timespec="minutes"),

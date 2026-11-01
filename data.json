@@ -1,6 +1,6 @@
 {
  "team": "Golden View Classical Academy",
- "generated": "2026-11-01T00:06-06:00",
+ "generated": "2026-11-01T00:37-06:00",
  "groups": [
   "Sprints",
   "Distance",
@@ -30,7 +30,13 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Samantha Duren",
@@ -47,7 +53,11 @@
     "High Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2026": "9"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Abigail Fresquez",
@@ -64,7 +74,12 @@
     "Triple Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Anna Bender",
@@ -78,7 +93,13 @@
     "Triple Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Kathryn Elrod",
@@ -97,7 +118,12 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Eva Acocella",
@@ -111,7 +137,12 @@
     "High Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Zayden Godbey",
@@ -132,7 +163,13 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Colby Julian",
@@ -148,7 +185,13 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Daniel Shelley",
@@ -166,7 +209,11 @@
     "High Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2026": "9"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Ryder Brown",
@@ -180,7 +227,12 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Luke Chronowski",
@@ -195,7 +247,13 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Oliver Forcina",
@@ -211,7 +269,12 @@
     "Shot Put"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Caleb Fresquez",
@@ -227,7 +290,13 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "McKade Hartvigsen",
@@ -241,7 +310,13 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Caleb Hawkins",
@@ -252,7 +327,12 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Jack Hawkins",
@@ -267,7 +347,13 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Gabriel Hodgdon",
@@ -279,7 +365,13 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Brett Julian",
@@ -295,7 +387,11 @@
     "Sprint Medley Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2026": "9"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Owen Klausen",
@@ -312,7 +408,12 @@
     "High Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Jovian Knoell",
@@ -327,7 +428,12 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "John Larkin",
@@ -344,7 +450,11 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2026": "9"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Ethan Lindorf",
@@ -357,7 +467,11 @@
     "4x200 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2026": "9"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Mac McGinn",
@@ -374,7 +488,11 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2026": "9"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Caden O'Quinn",
@@ -390,7 +508,13 @@
     "Sprint Medley Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Mason O'Quinn",
@@ -404,7 +528,13 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Brecken Saunders",
@@ -414,7 +544,11 @@
     "400m"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2026": "9"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Wesley Shuler",
@@ -428,7 +562,11 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2026": "9"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Joseph Todd",
@@ -443,7 +581,13 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Jacob Walker",
@@ -460,7 +604,13 @@
     "Triple Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Johnny Walker",
@@ -473,7 +623,11 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2026": "9"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Isaac Wasinger",
@@ -488,7 +642,11 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2026": "9"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Sawyer Williamson",
@@ -501,7 +659,11 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2026": "9"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Brennan Winters",
@@ -516,7 +678,12 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Sarah Bowden",
@@ -530,7 +697,11 @@
     "4x200 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2026": "9"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Genevieve Elrod",
@@ -547,7 +718,13 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Saoirse Green",
@@ -561,7 +738,13 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Siobhan Green",
@@ -575,7 +758,13 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Jorie Hartvigsen",
@@ -589,7 +778,12 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Grace Hehn",
@@ -605,7 +799,13 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Mary Heldt",
@@ -619,7 +819,12 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Ferryn Jones",
@@ -630,7 +835,12 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Jocelyn Le",
@@ -643,7 +853,13 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Whitney Maske",
@@ -659,7 +875,12 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Helen McMaken",
@@ -678,7 +899,13 @@
     "Sprint Medley Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Lucy Moore",
@@ -689,7 +916,12 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Stella Rapp",
@@ -702,7 +934,13 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Molly Wheaton",
@@ -715,7 +953,13 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Jane Wheatron",
@@ -730,7 +974,12 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Venus White",
@@ -745,7 +994,13 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Megan Wilkinson",
@@ -760,7 +1015,13 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Erin Wright",
@@ -775,7 +1036,13 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2026 (MileSplit)"
+   "notes": "Grade as of 2026 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2026"
   },
   {
    "name": "Anthony Acocella",
@@ -788,7 +1055,12 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Abdelgader Badanagki",
@@ -803,7 +1075,13 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Benjamin Bosch",
@@ -819,7 +1097,12 @@
     "Triple Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Benjamin Campbell",
@@ -834,7 +1117,12 @@
     "Shot Put"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2025": "9",
+    "2026": "10"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Tobin Crouch",
@@ -848,7 +1136,13 @@
     "4x400 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Wyatt Freedman",
@@ -861,7 +1155,13 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Isaiah Fresquez",
@@ -877,7 +1177,12 @@
     "Triple Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Michael Gomlak",
@@ -892,7 +1197,12 @@
     "Shot Put"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Adam Hehn",
@@ -908,7 +1218,12 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "George Hermanson",
@@ -922,7 +1237,13 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Bobby Kiesewetter",
@@ -937,7 +1258,12 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Sebastian Knoell",
@@ -950,7 +1276,12 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Brayden Le",
@@ -964,7 +1295,12 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Max Lindgren",
@@ -980,7 +1316,12 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Matthew Moore",
@@ -995,7 +1336,12 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Richard Muller",
@@ -1010,7 +1356,12 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Asah Rangel",
@@ -1022,7 +1373,13 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Collen Todd",
@@ -1037,7 +1394,13 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Luke Wahl",
@@ -1054,7 +1417,12 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Fletcher Williamson",
@@ -1066,7 +1434,12 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Natalie Arnold",
@@ -1080,7 +1453,12 @@
     "4x200 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Kaiden Baker",
@@ -1091,7 +1469,12 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Claire Charlson",
@@ -1105,7 +1488,13 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Margaret Doran",
@@ -1117,7 +1506,12 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Sophia Elrod",
@@ -1131,7 +1525,12 @@
     "High Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Claire Fischer",
@@ -1144,7 +1543,13 @@
     "4x400 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Maizlynn Garcia",
@@ -1156,7 +1561,12 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Cassie Mildenberger",
@@ -1167,7 +1577,12 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Rebecca Roalson",
@@ -1183,7 +1598,12 @@
     "4x400 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Elina Smith",
@@ -1198,7 +1618,12 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Kate Young",
@@ -1212,7 +1637,13 @@
     "Pole Vault"
    ],
    "coach": "",
-   "notes": "Grade as of 2025 (MileSplit)"
+   "notes": "Grade as of 2025 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2025"
   },
   {
    "name": "Cael Charlson",
@@ -1224,7 +1655,12 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Michael Chronowski",
@@ -1237,7 +1673,11 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Samuel Clackler",
@@ -1249,7 +1689,11 @@
     "1600m"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Torin Fischer",
@@ -1261,7 +1705,11 @@
     "3200m"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Paul Fox",
@@ -1277,7 +1725,11 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Atticus Freers",
@@ -1289,7 +1741,11 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Huckleberry Hale",
@@ -1302,7 +1758,13 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Aaron Hawkins",
@@ -1315,7 +1777,11 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Biniam Heldt",
@@ -1329,7 +1795,11 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Yosef Heldt",
@@ -1343,7 +1813,11 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Jack Jenkins",
@@ -1357,7 +1831,11 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Peter Jones",
@@ -1368,7 +1846,9 @@
     "Shot Put"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {},
+   "baseSeason": "2024"
   },
   {
    "name": "Conal Kerwin",
@@ -1379,7 +1859,11 @@
     "1600m"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Ezra Knoell",
@@ -1394,7 +1878,11 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Nathaniel Kopp",
@@ -1409,7 +1897,11 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Isaiah Lanan",
@@ -1420,7 +1912,9 @@
     "200m"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {},
+   "baseSeason": "2024"
   },
   {
    "name": "Connor Maske",
@@ -1433,7 +1927,11 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Weston McGregor",
@@ -1446,7 +1944,11 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Jackson Moore",
@@ -1463,7 +1965,11 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Breydon Raine",
@@ -1475,7 +1981,13 @@
     "Shot Put"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Jayden Sims",
@@ -1486,7 +1998,13 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Izaak Skorka",
@@ -1502,7 +2020,13 @@
     "Triple Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Cooper Urbas",
@@ -1517,7 +2041,11 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Isaac Vitry",
@@ -1528,7 +2056,13 @@
     "4x400 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Josh Wardlaw",
@@ -1544,7 +2078,11 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "William Wheaton",
@@ -1555,7 +2093,11 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Amelia Bartek",
@@ -1570,7 +2112,13 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "10",
+    "2025": "11",
+    "2026": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Percy Brown",
@@ -1587,7 +2135,11 @@
     "Sprint Medley Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Janessa Chidester",
@@ -1600,7 +2152,12 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Kyra Hattenbach",
@@ -1612,7 +2169,13 @@
     "800m"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "9",
+    "2025": "10",
+    "2026": "11"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Sarah Hermanson",
@@ -1628,7 +2191,11 @@
     "Sprint Medley Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Claira Larkin",
@@ -1642,7 +2209,11 @@
     "Long Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Leah Mildenberger",
@@ -1652,7 +2223,12 @@
     "Discus"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "11",
+    "2025": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Brigid Neuheardt",
@@ -1667,7 +2243,11 @@
     "Sprint Medley Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Cecilia Neuheardt",
@@ -1682,7 +2262,11 @@
     "Sprint Medley Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Lillian Tiews",
@@ -1695,7 +2279,11 @@
     "Sprint Medley Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Reese Urbas",
@@ -1707,7 +2295,11 @@
     "Triple Jump"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   },
   {
    "name": "Molly Wilkinson",
@@ -1721,7 +2313,11 @@
     "4x800 Relay"
    ],
    "coach": "",
-   "notes": "Grade as of 2024 (MileSplit)"
+   "notes": "Grade as of 2024 (MileSplit)",
+   "gradeBySeason": {
+    "2024": "12"
+   },
+   "baseSeason": "2024"
   }
  ],
  "meets": [
