@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Golden View Track &amp; Field · Season Tracker</title>
+<meta name="description" content="Golden View Classical Academy Track & Field season tracker: personal records, athlete progress, meet results and schedule.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<header class="hero">
+  <nav class="topnav">
+    <div class="brand"><span class="crest">GV</span><span>Golden View Track &amp; Field</span></div>
+    <div class="links">
+      <a href="#overview">Overview</a><a href="#prs">PR Board</a><a href="#athletes">Athletes</a><a href="#results">Results</a><a href="#schedule">Schedule</a>
+    </div>
+  </nav>
+  <div class="hero-inner">
+    <p class="eyebrow">Golden View Classical Academy · Golden, Colorado</p>
+    <h1>Golden View<br><span>Track &amp; Field</span></h1>
+    <p class="lede">Season tracker: personal records, athlete progress, meet results and the full schedule.</p>
+    <div class="hero-meta"><span class="pill" id="seasonPill">Season</span><span class="updated" id="updated"></span></div>
+  </div>
+</header>
+
+<main>
+  <section id="overview" class="section">
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <section id="prs" class="section">
+    <div class="section-head"><div><p class="kicker">Personal Records</p><h2>PR Board</h2></div>
+      <div class="filters">
+        <div class="seg" id="genderFilter"></div>
+        <div class="seg" id="groupFilter"></div>
+      </div>
+    </div>
+    <div id="prBoard" class="pr-grid"></div>
+  </section>
+
+  <section id="athletes" class="section">
+    <div class="section-head"><div><p class="kicker">Roster</p><h2>Athlete Profiles</h2></div></div>
+    <div id="athleteGrid" class="athlete-grid"></div>
+  </section>
+
+  <section id="compare" class="section" hidden>
+    <div class="section-head"><div><p class="kicker">Year over Year</p><h2>Season Comparison</h2></div></div>
+    <div class="card table-wrap"><table id="compareTable"></table></div>
+  </section>
+
+  <section id="standards" class="section" hidden>
+    <div class="section-head"><div><p class="kicker">Benchmarks</p><h2>Qualifying Standards</h2></div></div>
+    <div class="card table-wrap"><table id="standardsTable"></table></div>
+  </section>
+
+  <section id="results" class="section">
+    <div class="section-head"><div><p class="kicker">By Meet</p><h2>Meet Results</h2></div></div>
+    <div id="meetResults" class="meet-list"></div>
+  </section>
+
+  <section id="schedule" class="section">
+    <div class="section-head"><div><p class="kicker">Calendar</p><h2>Schedule</h2></div></div>
+    <div class="card table-wrap"><table id="scheduleTable" class="schedule"></table></div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div><strong>Golden View Classical Academy</strong> · Track &amp; Field · Golden, CO</div>
+  <div class="muted">Marks: <b>a</b> = fully automatic timing · <b>Q</b> = qualified · <b>R</b> = record. Data sourced from the team results sheet.</div>
+</footer>
+</body>
+</html>
