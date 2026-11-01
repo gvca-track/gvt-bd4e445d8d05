@@ -167,11 +167,10 @@
   if (meets.length) {
     const today = new Date().toLocaleDateString("en-CA", { timeZone: TZ });
     const nextIdx = meets.findIndex((m) => m.date && m.date >= today);
-    $("#scheduleTable").innerHTML = `<thead><tr><th>Date</th><th>Day</th><th>Time</th><th>Meet / Event</th><th>Location</th><th>Status</th></tr></thead><tbody>` +
+    $("#scheduleTable").innerHTML = `<thead><tr><th>Date</th><th>Day</th><th>Time</th><th>Meet / Event</th><th>Location</th></tr></thead><tbody>` +
       meets.map((m, i) => `<tr class="${m.date && m.date < today ? "past" : ""} ${i === nextIdx ? "next" : ""}">
         <td><b>${fmtDate(m.date, { month: "short", day: "numeric", year: "numeric" })}</b></td><td>${esc(m.day)}</td><td>${esc(m.time) || "TBA"}</td>
-        <td><b style="color:var(--navy)">${esc(m.name)}</b></td><td>${esc(m.location) || "TBA"}</td>
-        <td><span class="status ${m.status ? "" : "tbd"}">${esc(m.status || "TBD")}</span></td></tr>`).join("") + "</tbody>";
+        <td><b style="color:var(--navy)">${esc(m.name)}</b></td><td>${m.mapUrl ? `<a class="map-link" href="${esc(m.mapUrl)}" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>${esc(m.location || "Map")}</a>` : esc(m.location) || "TBA"}</td></tr>`).join("") + "</tbody>";
   }
   }
   // Season selector (hero): segmented buttons built from data.json seasons; choice kept in ?season=

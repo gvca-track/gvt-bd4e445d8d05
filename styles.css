@@ -100,3 +100,4 @@ tr.past td{color:var(--muted)} tr.next td{background:#fbf5e2}
 .season-seg button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .season-seg button.active{background:var(--gold);color:var(--navy);box-shadow:0 4px 14px rgba(201,162,39,.35)}
 @media (max-width:560px){.season-switch{gap:8px}.season-seg{display:flex;width:100%}.season-seg button{flex:1;padding:9px 6px;font-size:17px}}
+.map-link{display:inline-flex;align-items:center;gap:5px;color:var(--navy);text-decoration:none;border-bottom:1px dotted currentColor}.map-link:hover{color:var(--gold)}

@@ -70,6 +70,14 @@ def iso_date(note, season):
     if not m or not season.isdigit(): return None
     return f"{int(season):04d}-{int(m.group(1)):02d}-{int(m.group(2)):02d}"
 
+def split_location(loc, extra=""):
+    """Location may carry a map link as a HYPERLINK formula, a bare URL, or a separate Map column."""
+    m = re.match(r'^=HYPERLINK\(\s*"([^"]+)"\s*[,;]\s*"([^"]*)"\s*\)$', loc, re.I)
+    if m: return m.group(2), m.group(1)
+    u = re.search(r"https?://\S+", loc)
+    if u: return (loc.replace(u.group(0), "").strip(" -|()") or loc), u.group(0)
+    return loc, (extra if extra.startswith("http") else "")
+
 def season_year(s):
     m = re.search(r"\d{4}", s or "")
     return m.group(0) if m else ""
@@ -91,10 +99,11 @@ def main():
     for m in meets_raw:
         if not m.get("Meet / Event"): continue
         season = m.get("Season", "")
+        loc_text, map_url = split_location(m.get("Location", ""), m.get("Map", "") or m.get("Map URL", ""))
         meets.append({
             "day": m.get("Day", ""), "date": iso_date(m.get("Date", ""), season_year(season)),
             "status": m.get("Results", ""), "time": m.get("Time", ""),
-            "name": m["Meet / Event"], "location": m.get("Location", ""), "season": season,
+            "name": m["Meet / Event"], "location": loc_text, "mapUrl": map_url, "season": season,
         })
     meets.sort(key=lambda x: (x["date"] or "9999", x["name"]))
 
