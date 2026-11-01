@@ -158,7 +158,7 @@
     m.list.sort((a, b) => eventOrder(a.event) - eventOrder(b.event) || a.event.localeCompare(b.event) || (a.round === "Prelim" ? -1 : 1) || (a.value ?? 1e9) - (b.value ?? 1e9));
     const loc = meetInfo[m.name]?.location;
     const dt = m.date ? new Date(m.date + "T12:00:00") : null;
-    return `<details class="card meet" id="${meetId(m.name, curSeason)}" ${i === 0 ? "open" : ""}><summary>
+    return `<details class="card meet" id="${meetId(m.name, curSeason)}"><summary>
       <div class="datebox"><div class="m">${dt ? dt.toLocaleString("en-US", { month: "short", timeZone: TZ }) : ""}</div><div class="d">${dt ? dt.getDate() : "—"}</div></div>
       <div class="meet-title"><h3>${esc(m.name)}</h3><div>${esc(m.label)}${loc ? " · " + esc(loc) : ""}</div></div>
       <span class="count">${m.list.length} mark${m.list.length === 1 ? "" : "s"}</span>
@@ -287,9 +287,16 @@
       return { ath, ev, cells, field: any.field, group: any.group, gender: genderOf(any), n: cells.filter(Boolean).length }; })
       .sort((a, b) => a.gender.localeCompare(b.gender) || eventOrder(a.ev) - eventOrder(b.ev) || b.n - a.n || a.ath.localeCompare(b.ath));
     const delta = (p, c) => { const d = c.value - p.value; const imp = c.field ? d > 0 : d < 0; const txt = c.field ? `${d > 0 ? "+" : ""}${d.toFixed(1)} in` : `${d > 0 ? "+" : ""}${d.toFixed(2)} s`; return `<span style="color:${d === 0 ? "#5d6b82" : imp ? "#17703d" : "#a33"}">${txt}</span>`; };
+    const lastName = (n) => /^(Boys|Girls)\b/.test(n) ? "~" + n : n.split(" ").pop();
+    const byAth = (a, b) => lastName(a.ath).localeCompare(lastName(b.ath)) || a.ath.localeCompare(b.ath);
+    const byEv = (a, b) => eventOrder(a.ev) - eventOrder(b.ev) || a.ev.localeCompare(b.ev);
+    const sortTh = (key, label) => { const on = cmp.sortKey === key; const dir = on ? cmp.sortDir : "";
+      return `<th aria-sort="${on ? (dir === "asc" ? "ascending" : "descending") : "none"}"><button type="button" class="th-sort${on ? " on" : ""}" data-sort="${key}" aria-label="Sort by ${label}${on ? (dir === "asc" ? ", ascending" : ", descending") : ""}">${label}<span class="sort-ind" aria-hidden="true">${on ? (dir === "asc" ? "▲" : "▼") : "↕"}</span></button></th>`; };
     function renderCmp() {
-      const rows = rowsAll.filter((r) => (cmp.gender === "All" || r.gender === cmp.gender) && (cmp.group === "All" || r.group === cmp.group) && (cmp.multi ? r.n > 1 : true));
-      $("#compareTable").innerHTML = `<thead><tr><th>Athlete</th><th>Event</th>${cmpSeasons.map((se) => `<th>${esc(se)} Best</th>`).join("")}<th>Latest change</th><th>Overall change</th></tr></thead><tbody>` +
+      let rows = rowsAll.filter((r) => (cmp.gender === "All" || r.gender === cmp.gender) && (cmp.group === "All" || r.group === cmp.group) && (cmp.multi ? r.n > 1 : true));
+      if (cmp.sortKey) { const m = cmp.sortDir === "desc" ? -1 : 1; const [p, q] = cmp.sortKey === "ath" ? [byAth, byEv] : [byEv, byAth];
+        rows = [...rows].sort((a, b) => m * p(a, b) || q(a, b)); }
+      $("#compareTable").innerHTML = `<thead><tr>${sortTh("ath", "Athlete")}${sortTh("ev", "Event")}${cmpSeasons.map((se) => `<th>${esc(se)} Best</th>`).join("")}<th>Latest change</th><th>Overall change</th></tr></thead><tbody>` +
         (rows.length ? rows.map((r) => { const have = r.cells.filter(Boolean);
           const last = have.length > 1 ? delta(have[have.length - 2], have[have.length - 1]) : "—";
           const overall = have.length > 2 ? delta(have[0], have[have.length - 1]) : "—";
@@ -300,6 +307,9 @@
       el.onclick = (e) => { const b = e.target.closest("button"); if (!b) return; cmp[key] = b.dataset.v; segC(el, opts, key); renderCmp(); }; };
     segC($("#cmpGender"), ["All", "Boys", "Girls"], "gender");
     segC($("#cmpGroup"), groups, "group");
+    $("#compareTable").addEventListener("click", (e) => { const b = e.target.closest("button[data-sort]"); if (!b) return; const k = b.dataset.sort;
+      cmp.sortDir = cmp.sortKey === k && cmp.sortDir === "asc" ? "desc" : "asc"; cmp.sortKey = k; renderCmp();
+      $(`#compareTable button[data-sort="${k}"]`)?.focus(); });
     $("#cmpMulti").onchange = (e) => { cmp.multi = e.target.checked; renderCmp(); };
     $("#compareSeasons").textContent = cmpSeasons.join(" · ");
     renderCmp();
