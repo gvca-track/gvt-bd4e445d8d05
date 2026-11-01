@@ -276,30 +276,32 @@
   hashMeet();
   if (location.hash.startsWith("#meet-")) { const again = () => setTimeout(() => { const el = document.getElementById(decodeURIComponent(location.hash.slice(1))); if (el) el.scrollIntoView({ behavior: "instant", block: "start" }); }, 150);
     if (document.readyState === "complete") again(); else window.addEventListener("load", again, { once: true }); document.fonts?.ready.then(again); }
-  // Season comparison: every season side by side (e.g. 2024 / 2025 / 2026)
-  if (seasons.length > 1) {
-    const bySeason = Object.fromEntries(seasons.map((se) => [se, bests(valid.filter((r) => r.season === se))]));
+  // Season Comparison shows only the most recent MAX_COMPARE_SEASONS seasons; the rest of the site keeps all of them.
+  const MAX_COMPARE_SEASONS = 4;
+  const cmpSeasons = seasons.slice(-MAX_COMPARE_SEASONS);
+  if (cmpSeasons.length > 1) {
+    const bySeason = Object.fromEntries(cmpSeasons.map((se) => [se, bests(valid.filter((r) => r.season === se))]));
     const cmp = { gender: "All", group: "All" };
-    const keys = [...new Set(seasons.flatMap((se) => Object.keys(bySeason[se])))];
-    const rowsAll = keys.map((k) => { const [ath, ev] = k.split("|"); const cells = seasons.map((se) => bySeason[se][k]); const any = cells.find(Boolean);
+    const keys = [...new Set(cmpSeasons.flatMap((se) => Object.keys(bySeason[se])))];
+    const rowsAll = keys.map((k) => { const [ath, ev] = k.split("|"); const cells = cmpSeasons.map((se) => bySeason[se][k]); const any = cells.find(Boolean);
       return { ath, ev, cells, field: any.field, group: any.group, gender: genderOf(any), n: cells.filter(Boolean).length }; })
       .sort((a, b) => a.gender.localeCompare(b.gender) || eventOrder(a.ev) - eventOrder(b.ev) || b.n - a.n || a.ath.localeCompare(b.ath));
     const delta = (p, c) => { const d = c.value - p.value; const imp = c.field ? d > 0 : d < 0; const txt = c.field ? `${d > 0 ? "+" : ""}${d.toFixed(1)} in` : `${d > 0 ? "+" : ""}${d.toFixed(2)} s`; return `<span style="color:${d === 0 ? "#5d6b82" : imp ? "#17703d" : "#a33"}">${txt}</span>`; };
     function renderCmp() {
       const rows = rowsAll.filter((r) => (cmp.gender === "All" || r.gender === cmp.gender) && (cmp.group === "All" || r.group === cmp.group) && (cmp.multi ? r.n > 1 : true));
-      $("#compareTable").innerHTML = `<thead><tr><th>Athlete</th><th>Event</th>${seasons.map((se) => `<th>${esc(se)} Best</th>`).join("")}<th>Latest change</th><th>Overall change</th></tr></thead><tbody>` +
+      $("#compareTable").innerHTML = `<thead><tr><th>Athlete</th><th>Event</th>${cmpSeasons.map((se) => `<th>${esc(se)} Best</th>`).join("")}<th>Latest change</th><th>Overall change</th></tr></thead><tbody>` +
         (rows.length ? rows.map((r) => { const have = r.cells.filter(Boolean);
           const last = have.length > 1 ? delta(have[have.length - 2], have[have.length - 1]) : "—";
           const overall = have.length > 2 ? delta(have[0], have[have.length - 1]) : "—";
           return `<tr><td>${esc(r.ath)}</td><td>${esc(r.ev)}</td>${r.cells.map((c) => `<td class="mark">${c ? esc(markText(c.mark)) : "—"}</td>`).join("")}<td>${last}</td><td>${overall}</td></tr>`; }).join("")
-          : `<tr><td colspan="${seasons.length + 4}" class="empty">No marks match these filters.</td></tr>`) + "</tbody>";
+          : `<tr><td colspan="${cmpSeasons.length + 4}" class="empty">No marks match these filters.</td></tr>`) + "</tbody>";
     }
     const segC = (el, opts, key) => { el.innerHTML = opts.map((o) => `<button data-v="${esc(o)}" class="${cmp[key] === o ? "active" : ""}">${esc(o)}</button>`).join("");
       el.onclick = (e) => { const b = e.target.closest("button"); if (!b) return; cmp[key] = b.dataset.v; segC(el, opts, key); renderCmp(); }; };
     segC($("#cmpGender"), ["All", "Boys", "Girls"], "gender");
     segC($("#cmpGroup"), groups, "group");
     $("#cmpMulti").onchange = (e) => { cmp.multi = e.target.checked; renderCmp(); };
-    $("#compareSeasons").textContent = seasons.join(" · ");
+    $("#compareSeasons").textContent = cmpSeasons.join(" · ");
     renderCmp();
     $("#compare").hidden = false;
   }
