@@ -16,7 +16,7 @@
   <nav class="topnav">
     <div class="brand"><span class="crest">GV</span><span>Golden View Track &amp; Field</span></div>
     <div class="links">
-      <a href="#overview">Overview</a><a href="#prs">PR Board</a><a href="#athletes">Athletes</a><a href="#results">Results</a><a href="#schedule">Schedule</a>
+      <a href="#overview">Overview</a><a href="#prs">PR Board</a><a href="#athletes">Athletes</a><a href="#compare">Seasons</a><a href="#results">Results</a><a href="#schedule">Schedule</a>
     </div>
   </nav>
   <div class="hero-inner">
@@ -48,7 +48,13 @@
   </section>
 
   <section id="compare" class="section" hidden>
-    <div class="section-head"><div><p class="kicker">Year over Year</p><h2>Season Comparison</h2></div></div>
+    <div class="section-head"><div><p class="kicker">Year over Year · <span id="compareSeasons"></span></p><h2>Season Comparison</h2></div>
+      <div class="filters">
+        <div class="seg" id="cmpGender"></div>
+        <div class="seg" id="cmpGroup"></div>
+        <label class="muted" style="display:flex;align-items:center;gap:6px;font-size:13px"><input type="checkbox" id="cmpMulti"> Multi-season only</label>
+      </div>
+    </div>
     <div class="card table-wrap"><table id="compareTable"></table></div>
   </section>
 
@@ -70,7 +76,7 @@
 
 <footer class="footer">
   <div><strong>Golden View Classical Academy</strong> · Track &amp; Field · Golden, CO</div>
-  <div class="muted">Marks: <b>a</b> = fully automatic timing · <b>Q</b> = qualified · <b>R</b> = record. Data sourced from the team results sheet.</div>
+  <div class="muted">Marks: <b>a</b> = fully automatic timing · <b>Q</b> = qualified · <b>R</b> = record · <b>q</b> = qualified by time · <b>M</b> = meet record. Data sourced from the team results sheet.</div>
 </footer>
 </body>
 </html>

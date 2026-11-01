@@ -13,12 +13,14 @@
   const seasons = [...new Set(results.map((r) => r.season).filter(Boolean))].sort();
   const curSeason = seasons[seasons.length - 1] || "";
   const athletesByName = Object.fromEntries((data.athletes || []).map((a) => [a.name, a]));
-  const eventOrder = (e) => { const g = ["Sprints", "Distance", "Hurdles", "Relays", "Jumps", "Throws", "Other"].indexOf(groupOf(e)); const n = parseInt(e) || 0; return g * 100000 + n; };
+  const genderOf = (r) => r.gender || (athletesByName[r.athlete] || {}).gender || (/^(Boys|Girls)\b/.exec(r.athlete) || [])[1] || "";
+  const GROUPS = data.groups || ["Sprints", "Distance", "Hurdles", "Relays", "Jumps", "Throws"];
+  const eventOrder = (e) => { const g = [...GROUPS, "Other"].indexOf(groupOf(e)); const n = parseInt(e) || 0; return g * 100000 + n; };
   function groupOf(e) { const r = results.find((x) => x.event === e); return r ? r.group : "Other"; }
   const fmtDate = (iso, opts) => iso ? new Date(iso + "T12:00:00").toLocaleDateString("en-US", { timeZone: TZ, ...opts }) : "";
   const initials = (n) => n.split(/\s+/).map((p) => p[0]).slice(0, 2).join("");
   const tags = (r) => (r.qualified ? '<span class="tag q">Q</span>' : "") + (r.record ? '<span class="tag r">R</span>' : "") + (r.fat ? '<span class="tag a" title="Fully automatic timing">FAT</span>' : "");
-  const markText = (m) => String(m).replace(/[aQR]+$/, "");
+  const markText = (m) => String(m).replace(/(\d)[aqQRM]+$/, "$1");
 
   // best mark per athlete+event (+season)
   function bests(list) {
@@ -45,7 +47,7 @@
   const events = [...new Set(curResults.map((r) => r.event))];
   const wins = results.filter((r) => r.season === curSeason && r.place === "1").length;
   const stats = [
-    [(data.athletes || []).length, "Athletes"],
+    [new Set(curResults.filter((r) => !r.relay).map((r) => r.athlete)).size, "Athletes Competing"],
     [results.filter((r) => r.season === curSeason).length, "Marks Recorded"],
     [meetsCompeted, "Meets Competed"],
     [events.length, "Events Contested"],
@@ -56,7 +58,8 @@
   // PR board
   const state = { gender: "All", group: "All" };
   const genders = ["All", ...new Set((data.athletes || []).map((a) => a.gender).filter(Boolean))];
-  const groups = ["All", ...new Set(curResults.map((r) => r.group))];
+  const present = new Set(valid.map((r) => r.group));
+  const groups = ["All", ...GROUPS.filter((g) => present.has(g))];
   function seg(el, opts, key) {
     el.innerHTML = opts.map((o) => `<button data-v="${esc(o)}" class="${state[key] === o ? "active" : ""}">${esc(o)}</button>`).join("");
     el.onclick = (e) => { const b = e.target.closest("button"); if (!b) return; state[key] = b.dataset.v; seg(el, opts, key); renderPR(); };
@@ -65,11 +68,10 @@
   seg($("#groupFilter"), groups, "group");
   function renderPR() {
     const rows = Object.values(curBests).filter((r) => {
-      const a = athletesByName[r.athlete] || {};
-      return (state.gender === "All" || a.gender === state.gender) && (state.group === "All" || r.group === state.group);
+      return (state.gender === "All" || genderOf(r) === state.gender) && (state.group === "All" || r.group === state.group);
     });
     const byEv = {};
-    rows.forEach((r) => { const g = (athletesByName[r.athlete] || {}).gender || ""; const k = (g ? g + " " : "") + r.event; (byEv[k] = byEv[k] || { ev: r.event, g, list: [] }).list.push(r); });
+    rows.forEach((r) => { const g = genderOf(r); const k = (g ? g + " " : "") + r.event; (byEv[k] = byEv[k] || { ev: r.event, g, list: [] }).list.push(r); });
     const keys = Object.keys(byEv).sort((a, b) => byEv[a].g.localeCompare(byEv[b].g) || eventOrder(byEv[a].ev) - eventOrder(byEv[b].ev));
     $("#prBoard").innerHTML = keys.length ? keys.map((k) => {
       const { ev, g, list } = byEv[k];
@@ -86,26 +88,31 @@
   const charts = [];
   const sortedAth = [...(data.athletes || [])].sort((a, b) => a.gender.localeCompare(b.gender) || a.name.split(" ").pop().localeCompare(b.name.split(" ").pop()));
   $("#athleteGrid").innerHTML = sortedAth.map((a, i) => {
-    const mine = curResults.filter((r) => r.athlete === a.name);
+    const all = valid.filter((r) => r.athlete === a.name);
+    const lastSeason = all.map((r) => r.season).sort().pop() || curSeason;
+    a._season = lastSeason;
+    const mine = all.filter((r) => r.season === lastSeason);
+    const myBests = bests(mine);
     const evs = [...new Set(mine.map((r) => r.event))].sort((x, y) => eventOrder(x) - eventOrder(y));
-    const chips = evs.map((e) => { const b = curBests[a.name + "|" + e]; return `<div class="chip">${esc(e)}<b>${esc(markText(b.mark))}</b></div>`; }).join("");
+    const chips = evs.map((e) => { const b = myBests[a.name + "|" + e]; return `<div class="chip">${esc(e)}<b>${esc(markText(b.mark))}</b></div>`; }).join("");
     return `<article class="card athlete"><div class="ath-head"><div class="avatar">${esc(initials(a.name))}</div>
-      <div><h3>${esc(a.name)}</h3><div class="ath-meta">${esc(a.gender)} · Grade ${esc(a.grade)} · ${mine.length} mark${mine.length === 1 ? "" : "s"}</div></div></div>
+      <div><h3>${esc(a.name)}</h3><div class="ath-meta">${esc(a.gender)} · Grade ${esc(a.grade)} · ${mine.length} mark${mine.length === 1 ? "" : "s"} in ${esc(lastSeason)}${lastSeason !== curSeason ? ' <span class="muted">(last season competed)</span>' : ""}</div></div></div>
       <div class="ath-prs">${chips || '<span class="muted">No marks yet</span>'}</div>
       ${evs.length ? `<div class="ev-tabs" data-i="${i}">${evs.map((e, j) => `<button class="${j === 0 ? "active" : ""}" data-e="${esc(e)}">${esc(e)}</button>`).join("")}</div><div class="chart-box"><canvas id="ch${i}"></canvas></div>` : ""}
     </article>`;
   }).join("");
   function drawChart(i, ev) {
     const a = sortedAth[i];
-    const pts = curResults.filter((r) => r.athlete === a.name && r.event === ev).sort((x, y) => (x.date || "").localeCompare(y.date || "") || (x.round === "Prelim" ? -1 : 1));
+    const pts = valid.filter((r) => r.athlete === a.name && r.event === ev).sort((x, y) => (x.date || "").localeCompare(y.date || "") || (x.round === "Prelim" ? -1 : 1));
     const field = pts[0]?.field;
     const ctx = document.getElementById("ch" + i);
     if (!ctx || !window.Chart) return;
     if (charts[i]) charts[i].destroy();
-    const best = curBests[a.name + "|" + ev];
+    const best = bests(pts)[a.name + "|" + ev];
+    const multi = new Set(pts.map((p) => p.season)).size > 1;
     charts[i] = new Chart(ctx, {
       type: "line",
-      data: { labels: pts.map((p) => fmtDate(p.date, { month: "short", day: "numeric" }) + (p.round === "Prelim" ? " (P)" : "")),
+      data: { labels: pts.map((p) => fmtDate(p.date, multi ? { month: "short", day: "numeric", year: "2-digit" } : { month: "short", day: "numeric" }) + (p.round === "Prelim" ? " (P)" : "")),
         datasets: [{ data: pts.map((p) => p.value), borderColor: "#0b1f3a", backgroundColor: "rgba(201,162,39,.15)", fill: false, cubicInterpolationMode: "monotone", borderWidth: 2.5,
           pointRadius: pts.map((p) => (p === best ? 7 : 4)), pointBackgroundColor: pts.map((p) => (p === best ? "#c9a227" : "#0b1f3a")), pointBorderColor: "#fff", pointBorderWidth: 2 }] },
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false },
@@ -126,15 +133,31 @@
   const initCharts = () => document.querySelectorAll(".ev-tabs").forEach((t) => drawChart(+t.dataset.i, t.querySelector("button").dataset.e));
   if (window.Chart) initCharts(); else window.addEventListener("load", initCharts);
 
-  // Season comparison (shown when results span 2+ seasons)
+  // Season comparison: every season side by side (e.g. 2024 / 2025 / 2026)
   if (seasons.length > 1) {
-    const prev = seasons[seasons.length - 2];
-    const prevBests = bests(valid.filter((r) => r.season === prev));
-    const keys = [...new Set([...Object.keys(prevBests), ...Object.keys(curBests)])].sort();
-    $("#compareTable").innerHTML = `<thead><tr><th>Athlete</th><th>Event</th><th>${esc(prev)} Best</th><th>${esc(curSeason)} Best</th><th>Change</th></tr></thead><tbody>` +
-      keys.map((k) => { const p = prevBests[k], c = curBests[k]; const [ath, ev] = k.split("|");
-        let ch = "—"; if (p && c) { const d = c.value - p.value; const imp = c.field ? d > 0 : d < 0; ch = `<span style="color:${imp ? "#17703d" : "#a33"}">${d > 0 ? "+" : ""}${d.toFixed(2)}${c.field ? " in" : " s"}</span>`; }
-        return `<tr><td>${esc(ath)}</td><td>${esc(ev)}</td><td class="mark">${p ? esc(markText(p.mark)) : "—"}</td><td class="mark">${c ? esc(markText(c.mark)) : "—"}</td><td>${ch}</td></tr>`; }).join("") + "</tbody>";
+    const bySeason = Object.fromEntries(seasons.map((se) => [se, bests(valid.filter((r) => r.season === se))]));
+    const cmp = { gender: "All", group: "All" };
+    const keys = [...new Set(seasons.flatMap((se) => Object.keys(bySeason[se])))];
+    const rowsAll = keys.map((k) => { const [ath, ev] = k.split("|"); const cells = seasons.map((se) => bySeason[se][k]); const any = cells.find(Boolean);
+      return { ath, ev, cells, field: any.field, group: any.group, gender: genderOf(any), n: cells.filter(Boolean).length }; })
+      .sort((a, b) => a.gender.localeCompare(b.gender) || eventOrder(a.ev) - eventOrder(b.ev) || b.n - a.n || a.ath.localeCompare(b.ath));
+    const delta = (p, c) => { const d = c.value - p.value; const imp = c.field ? d > 0 : d < 0; const txt = c.field ? `${d > 0 ? "+" : ""}${d.toFixed(1)} in` : `${d > 0 ? "+" : ""}${d.toFixed(2)} s`; return `<span style="color:${d === 0 ? "#5d6b82" : imp ? "#17703d" : "#a33"}">${txt}</span>`; };
+    function renderCmp() {
+      const rows = rowsAll.filter((r) => (cmp.gender === "All" || r.gender === cmp.gender) && (cmp.group === "All" || r.group === cmp.group) && (cmp.multi ? r.n > 1 : true));
+      $("#compareTable").innerHTML = `<thead><tr><th>Athlete</th><th>Event</th>${seasons.map((se) => `<th>${esc(se)} Best</th>`).join("")}<th>Latest change</th><th>Overall change</th></tr></thead><tbody>` +
+        (rows.length ? rows.map((r) => { const have = r.cells.filter(Boolean);
+          const last = have.length > 1 ? delta(have[have.length - 2], have[have.length - 1]) : "—";
+          const overall = have.length > 2 ? delta(have[0], have[have.length - 1]) : "—";
+          return `<tr><td>${esc(r.ath)}</td><td>${esc(r.ev)}</td>${r.cells.map((c) => `<td class="mark">${c ? esc(markText(c.mark)) : "—"}</td>`).join("")}<td>${last}</td><td>${overall}</td></tr>`; }).join("")
+          : `<tr><td colspan="${seasons.length + 4}" class="empty">No marks match these filters.</td></tr>`) + "</tbody>";
+    }
+    const segC = (el, opts, key) => { el.innerHTML = opts.map((o) => `<button data-v="${esc(o)}" class="${cmp[key] === o ? "active" : ""}">${esc(o)}</button>`).join("");
+      el.onclick = (e) => { const b = e.target.closest("button"); if (!b) return; cmp[key] = b.dataset.v; segC(el, opts, key); renderCmp(); }; };
+    segC($("#cmpGender"), ["All", "Boys", "Girls"], "gender");
+    segC($("#cmpGroup"), groups, "group");
+    $("#cmpMulti").onchange = (e) => { cmp.multi = e.target.checked; renderCmp(); };
+    $("#compareSeasons").textContent = seasons.join(" · ");
+    renderCmp();
     $("#compare").hidden = false;
   }
 

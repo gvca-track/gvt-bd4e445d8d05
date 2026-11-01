@@ -86,3 +86,7 @@ tr.past td{color:var(--muted)} tr.next td{background:#fbf5e2}
 .pr-grid,.athlete-grid{grid-template-columns:1fr}.stat-num{font-size:30px}.stat{padding:16px}
 .seg{width:100%;overflow-x:auto}.seg button{flex:1;padding:7px 8px}.filters{width:100%}
 .meet summary{padding:14px;gap:12px}.count{display:none}td,th{padding:9px 10px}}
+
+/* Season comparison spans several seasons: keep it scrollable with sticky headers */
+#compare .table-wrap { max-height: 620px; overflow: auto; }
+#compare thead th { position: sticky; top: 0; background: #fff; z-index: 1; }
