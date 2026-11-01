@@ -11,7 +11,9 @@
   const valid = results.filter((r) => r.value != null);
   const better = (a, b, field) => (field ? a > b : a < b);
   const seasons = [...new Set(results.map((r) => r.season).filter(Boolean))].sort();
-  const curSeason = seasons[seasons.length - 1] || "";
+  const latestSeason = seasons[seasons.length - 1] || "";
+  const fromUrl = () => { const q = new URLSearchParams(location.search).get("season") || (location.hash.match(/season=(\d{4})/) || [])[1]; return seasons.includes(q) ? q : latestSeason; };
+  let curSeason = fromUrl();
   const athletesByName = Object.fromEntries((data.athletes || []).map((a) => [a.name, a]));
   const genderOf = (r) => r.gender || (athletesByName[r.athlete] || {}).gender || (/^(Boys|Girls)\b/.exec(r.athlete) || [])[1] || "";
   const GROUPS = data.groups || ["Sprints", "Distance", "Hurdles", "Relays", "Jumps", "Throws"];
@@ -31,9 +33,13 @@
     }
     return map;
   }
-  const curResults = valid.filter((r) => r.season === curSeason);
-  const curBests = bests(curResults);
-  const prSet = new Set(Object.values(curBests));
+  let curResults, curBests, prSet, groups;
+  const state = { gender: "All", group: "All" };
+  const charts = [];
+  function render() {
+  curResults = valid.filter((r) => r.season === curSeason);
+  curBests = bests(curResults);
+  prSet = new Set(Object.values(curBests));
 
   // Header
   $("#seasonPill").textContent = curSeason ? `Season ${curSeason}` : "Season";
@@ -56,10 +62,9 @@
   $("#stats").innerHTML = stats.map(([n, l]) => `<div class="stat"><div class="stat-num">${n}</div><div class="stat-label">${l}</div></div>`).join("");
 
   // PR board
-  const state = { gender: "All", group: "All" };
   const genders = ["All", ...new Set((data.athletes || []).map((a) => a.gender).filter(Boolean))];
   const present = new Set(valid.map((r) => r.group));
-  const groups = ["All", ...GROUPS.filter((g) => present.has(g))];
+  groups = ["All", ...GROUPS.filter((g) => present.has(g))];
   function seg(el, opts, key) {
     el.innerHTML = opts.map((o) => `<button data-v="${esc(o)}" class="${state[key] === o ? "active" : ""}">${esc(o)}</button>`).join("");
     el.onclick = (e) => { const b = e.target.closest("button"); if (!b) return; state[key] = b.dataset.v; seg(el, opts, key); renderPR(); };
@@ -85,22 +90,23 @@
   renderPR();
 
   // Athlete profiles
-  const charts = [];
+  charts.forEach((c) => c && c.destroy()); charts.length = 0;
   const sortedAth = [...(data.athletes || [])].sort((a, b) => a.gender.localeCompare(b.gender) || a.name.split(" ").pop().localeCompare(b.name.split(" ").pop()));
-  $("#athleteGrid").innerHTML = sortedAth.map((a, i) => {
-    const all = valid.filter((r) => r.athlete === a.name);
-    const lastSeason = all.map((r) => r.season).sort().pop() || curSeason;
-    a._season = lastSeason;
-    const mine = all.filter((r) => r.season === lastSeason);
+  const seasonAth = sortedAth.filter((a) => curResults.some((r) => r.athlete === a.name));
+  $("#athleteCount").textContent = `${seasonAth.length} athletes competed in ${curSeason}`;
+  $("#athleteGrid").innerHTML = seasonAth.length ? seasonAth.map((a) => {
+    const i = sortedAth.indexOf(a);
+    const lastSeason = curSeason;
+    const mine = curResults.filter((r) => r.athlete === a.name);
     const myBests = bests(mine);
     const evs = [...new Set(mine.map((r) => r.event))].sort((x, y) => eventOrder(x) - eventOrder(y));
     const chips = evs.map((e) => { const b = myBests[a.name + "|" + e]; return `<div class="chip">${esc(e)}<b>${esc(markText(b.mark))}</b></div>`; }).join("");
     return `<article class="card athlete"><div class="ath-head"><div class="avatar">${esc(initials(a.name))}</div>
-      <div><h3>${esc(a.name)}</h3><div class="ath-meta">${esc(a.gender)} · Grade ${esc(a.grade)} · ${mine.length} mark${mine.length === 1 ? "" : "s"} in ${esc(lastSeason)}${lastSeason !== curSeason ? ' <span class="muted">(last season competed)</span>' : ""}</div></div></div>
+      <div><h3>${esc(a.name)}</h3><div class="ath-meta">${esc(a.gender)} · Grade ${esc(a.grade)} · ${mine.length} mark${mine.length === 1 ? "" : "s"} in ${esc(lastSeason)}</div></div></div>
       <div class="ath-prs">${chips || '<span class="muted">No marks yet</span>'}</div>
       ${evs.length ? `<div class="ev-tabs" data-i="${i}">${evs.map((e, j) => `<button class="${j === 0 ? "active" : ""}" data-e="${esc(e)}">${esc(e)}</button>`).join("")}</div><div class="chart-box"><canvas id="ch${i}"></canvas></div>` : ""}
     </article>`;
-  }).join("");
+  }).join("") : '<div class="card empty">No athletes competed this season.</div>';
   function drawChart(i, ev) {
     const a = sortedAth[i];
     const pts = valid.filter((r) => r.athlete === a.name && r.event === ev).sort((x, y) => (x.date || "").localeCompare(y.date || "") || (x.round === "Prelim" ? -1 : 1));
@@ -108,15 +114,17 @@
     const ctx = document.getElementById("ch" + i);
     if (!ctx || !window.Chart) return;
     if (charts[i]) charts[i].destroy();
-    const best = bests(pts)[a.name + "|" + ev];
+    const best = bests(pts.filter((p) => p.season === curSeason))[a.name + "|" + ev];
+    const sel = (p) => p.season === curSeason;
     const multi = new Set(pts.map((p) => p.season)).size > 1;
     charts[i] = new Chart(ctx, {
       type: "line",
       data: { labels: pts.map((p) => fmtDate(p.date, multi ? { month: "short", day: "numeric", year: "2-digit" } : { month: "short", day: "numeric" }) + (p.round === "Prelim" ? " (P)" : "")),
         datasets: [{ data: pts.map((p) => p.value), borderColor: "#0b1f3a", backgroundColor: "rgba(201,162,39,.15)", fill: false, cubicInterpolationMode: "monotone", borderWidth: 2.5,
-          pointRadius: pts.map((p) => (p === best ? 7 : 4)), pointBackgroundColor: pts.map((p) => (p === best ? "#c9a227" : "#0b1f3a")), pointBorderColor: "#fff", pointBorderWidth: 2 }] },
+          pointRadius: pts.map((p) => (p === best ? 8 : sel(p) ? 5 : 3)), pointBackgroundColor: pts.map((p) => (p === best ? "#c9a227" : sel(p) ? "#0b1f3a" : "#b8c2d3")),
+          segment: { borderColor: (c) => (sel(pts[c.p1DataIndex]) && sel(pts[c.p0DataIndex]) ? "#0b1f3a" : "#c9d1de") }, pointBorderColor: "#fff", pointBorderWidth: 2 }] },
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false },
-          tooltip: { callbacks: { title: (c) => pts[c[0].dataIndex].meet, label: (c) => `${markText(pts[c.dataIndex].mark)}  (${pts[c.dataIndex].dateLabel})` } } },
+          tooltip: { callbacks: { title: (c) => pts[c[0].dataIndex].meet, label: (c) => `${markText(pts[c.dataIndex].mark)}  (${pts[c.dataIndex].dateLabel} ${pts[c.dataIndex].season})` } } },
         scales: { y: { reverse: !field, grid: { color: "#eef1f6" }, ticks: { font: { size: 11 }, callback: (v) => fmtVal(v, field) },
             title: { display: true, text: field ? "higher is better" : "faster ↑", font: { size: 10 }, color: "#5d6b82" } },
           x: { offset: pts.length < 3, grid: { display: false }, ticks: { font: { size: 11 } } } } },
@@ -131,8 +139,58 @@
     t.onclick = (e) => { const b = e.target.closest("button"); if (!b) return; t.querySelectorAll("button").forEach((x) => x.classList.toggle("active", x === b)); drawChart(+t.dataset.i, b.dataset.e); };
   });
   const initCharts = () => document.querySelectorAll(".ev-tabs").forEach((t) => drawChart(+t.dataset.i, t.querySelector("button").dataset.e));
-  if (window.Chart) initCharts(); else window.addEventListener("load", initCharts);
+  if (window.Chart) initCharts(); else window.addEventListener("load", initCharts, { once: true });
 
+  // Meet results grouped by meet
+  const meetMap = {};
+  results.filter((r) => r.season === curSeason).forEach((r) => { const k = r.meet + "|" + r.season; (meetMap[k] = meetMap[k] || { name: r.meet, date: r.date, label: r.dateLabel, list: [] }).list.push(r); if ((r.date || "") < (meetMap[k].date || "~")) meetMap[k].date = r.date; });
+  const meetInfo = Object.fromEntries((data.meets || []).filter((m) => m.season === curSeason).map((m) => [m.name, m]));
+  const meetsSorted = Object.values(meetMap).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  $("#meetResults").innerHTML = meetsSorted.length ? meetsSorted.map((m, i) => {
+    m.list.sort((a, b) => eventOrder(a.event) - eventOrder(b.event) || a.event.localeCompare(b.event) || (a.round === "Prelim" ? -1 : 1) || (a.value ?? 1e9) - (b.value ?? 1e9));
+    const loc = meetInfo[m.name]?.location;
+    const dt = m.date ? new Date(m.date + "T12:00:00") : null;
+    return `<details class="card meet" ${i === 0 ? "open" : ""}><summary>
+      <div class="datebox"><div class="m">${dt ? dt.toLocaleString("en-US", { month: "short", timeZone: TZ }) : ""}</div><div class="d">${dt ? dt.getDate() : "—"}</div></div>
+      <div class="meet-title"><h3>${esc(m.name)}</h3><div>${esc(m.label)}${loc ? " · " + esc(loc) : ""}</div></div>
+      <span class="count">${m.list.length} mark${m.list.length === 1 ? "" : "s"}</span>
+      <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="table-wrap"><table><thead><tr><th>Event</th><th>Athlete</th><th>Mark</th><th>Place</th><th>Round</th><th>Wind</th></tr></thead><tbody>
+      ${m.list.map((r) => `<tr><td>${esc(r.event)}</td><td>${esc(r.athlete)}</td><td class="mark">${esc(markText(r.mark))}${tags(r)}${prSet.has(r) ? '<span class="pr-flag">PR</span>' : ""}</td><td>${esc(r.place) || "—"}</td><td>${esc(r.round)}</td><td>${esc(r.wind) || "—"}</td></tr>`).join("")}
+      </tbody></table></div></details>`;
+  }).join("") : "";
+  $("#results").hidden = !meetsSorted.length;
+
+  // Schedule
+  const meets = (data.meets || []).filter((m) => (m.season || "").includes(curSeason));
+  $("#schedule").hidden = !meets.length;
+  if (meets.length) {
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: TZ });
+    const nextIdx = meets.findIndex((m) => m.date && m.date >= today);
+    $("#scheduleTable").innerHTML = `<thead><tr><th>Date</th><th>Day</th><th>Time</th><th>Meet / Event</th><th>Location</th><th>Status</th></tr></thead><tbody>` +
+      meets.map((m, i) => `<tr class="${m.date && m.date < today ? "past" : ""} ${i === nextIdx ? "next" : ""}">
+        <td><b>${fmtDate(m.date, { month: "short", day: "numeric", year: "numeric" })}</b></td><td>${esc(m.day)}</td><td>${esc(m.time) || "TBA"}</td>
+        <td><b style="color:var(--navy)">${esc(m.name)}</b></td><td>${esc(m.location) || "TBA"}</td>
+        <td><span class="status ${m.status ? "" : "tbd"}">${esc(m.status || "TBD")}</span></td></tr>`).join("") + "</tbody>";
+  }
+  }
+  // Season selector (hero): segmented buttons built from data.json seasons; choice kept in ?season=
+  function renderSeasonSel() {
+    const el = $("#seasonSelect"); if (!el) return;
+    el.hidden = seasons.length < 2;
+    el.innerHTML = seasons.map((se) => `<button type="button" role="radio" aria-checked="${se === curSeason}" data-v="${esc(se)}" class="${se === curSeason ? "active" : ""}">${esc(se)}</button>`).join("");
+  }
+  function setSeason(se, push) {
+    if (!seasons.includes(se) || (se === curSeason && push)) return;
+    curSeason = se;
+    const u = new URL(location.href);
+    if (se === latestSeason) u.searchParams.delete("season"); else u.searchParams.set("season", se);
+    if (push) history.pushState({ season: se }, "", u);
+    renderSeasonSel(); render();
+  }
+  $("#seasonSelect")?.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) setSeason(b.dataset.v, true); });
+  window.addEventListener("popstate", () => { curSeason = fromUrl(); renderSeasonSel(); render(); });
+  renderSeasonSel(); render();
   // Season comparison: every season side by side (e.g. 2024 / 2025 / 2026)
   if (seasons.length > 1) {
     const bySeason = Object.fromEntries(seasons.map((se) => [se, bests(valid.filter((r) => r.season === se))]));
@@ -169,36 +227,4 @@
     $("#standards").hidden = false;
   }
 
-  // Meet results grouped by meet
-  const meetMap = {};
-  results.forEach((r) => { const k = r.meet + "|" + r.season; (meetMap[k] = meetMap[k] || { name: r.meet, date: r.date, label: r.dateLabel, list: [] }).list.push(r); if ((r.date || "") < (meetMap[k].date || "~")) meetMap[k].date = r.date; });
-  const meetInfo = Object.fromEntries((data.meets || []).map((m) => [m.name, m]));
-  const meetsSorted = Object.values(meetMap).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-  $("#meetResults").innerHTML = meetsSorted.length ? meetsSorted.map((m, i) => {
-    m.list.sort((a, b) => eventOrder(a.event) - eventOrder(b.event) || a.event.localeCompare(b.event) || (a.round === "Prelim" ? -1 : 1) || (a.value ?? 1e9) - (b.value ?? 1e9));
-    const loc = meetInfo[m.name]?.location;
-    const dt = m.date ? new Date(m.date + "T12:00:00") : null;
-    return `<details class="card meet" ${i === 0 ? "open" : ""}><summary>
-      <div class="datebox"><div class="m">${dt ? dt.toLocaleString("en-US", { month: "short", timeZone: TZ }) : ""}</div><div class="d">${dt ? dt.getDate() : "—"}</div></div>
-      <div class="meet-title"><h3>${esc(m.name)}</h3><div>${esc(m.label)}${loc ? " · " + esc(loc) : ""}</div></div>
-      <span class="count">${m.list.length} mark${m.list.length === 1 ? "" : "s"}</span>
-      <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></summary>
-      <div class="table-wrap"><table><thead><tr><th>Event</th><th>Athlete</th><th>Mark</th><th>Place</th><th>Round</th><th>Wind</th></tr></thead><tbody>
-      ${m.list.map((r) => `<tr><td>${esc(r.event)}</td><td>${esc(r.athlete)}</td><td class="mark">${esc(markText(r.mark))}${tags(r)}${prSet.has(r) ? '<span class="pr-flag">PR</span>' : ""}</td><td>${esc(r.place) || "—"}</td><td>${esc(r.round)}</td><td>${esc(r.wind) || "—"}</td></tr>`).join("")}
-      </tbody></table></div></details>`;
-  }).join("") : "";
-  if (!meetsSorted.length) $("#results").hidden = true;
-
-  // Schedule
-  const meets = data.meets || [];
-  if (!meets.length) $("#schedule").hidden = true;
-  else {
-    const today = new Date().toLocaleDateString("en-CA", { timeZone: TZ });
-    const nextIdx = meets.findIndex((m) => m.date && m.date >= today);
-    $("#scheduleTable").innerHTML = `<thead><tr><th>Date</th><th>Day</th><th>Time</th><th>Meet / Event</th><th>Location</th><th>Status</th></tr></thead><tbody>` +
-      meets.map((m, i) => `<tr class="${m.date && m.date < today ? "past" : ""} ${i === nextIdx ? "next" : ""}">
-        <td><b>${fmtDate(m.date, { month: "short", day: "numeric", year: "numeric" })}</b></td><td>${esc(m.day)}</td><td>${esc(m.time) || "TBA"}</td>
-        <td><b style="color:var(--navy)">${esc(m.name)}</b></td><td>${esc(m.location) || "TBA"}</td>
-        <td><span class="status ${m.status ? "" : "tbd"}">${esc(m.status || "TBD")}</span></td></tr>`).join("") + "</tbody>";
-  }
 })();

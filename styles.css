@@ -90,3 +90,13 @@ tr.past td{color:var(--muted)} tr.next td{background:#fbf5e2}
 /* Season comparison spans several seasons: keep it scrollable with sticky headers */
 #compare .table-wrap { max-height: 620px; overflow: auto; }
 #compare thead th { position: sticky; top: 0; background: #fff; z-index: 1; }
+
+/* Season selector in the hero */
+.season-switch{display:flex;align-items:center;gap:14px;margin:4px 0 18px;flex-wrap:wrap}
+.season-label{font:600 12px Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.season-seg{display:inline-flex;gap:4px;padding:5px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(6px)}
+.season-seg button{border:0;background:transparent;color:#fff;font:700 18px Oswald,Inter,sans-serif;letter-spacing:.04em;padding:9px 22px;border-radius:10px;cursor:pointer;min-height:44px;transition:background .15s,color .15s,transform .15s}
+.season-seg button:hover{background:rgba(255,255,255,.12)}
+.season-seg button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.season-seg button.active{background:var(--gold);color:var(--navy);box-shadow:0 4px 14px rgba(201,162,39,.35)}
+@media (max-width:560px){.season-switch{gap:8px}.season-seg{display:flex;width:100%}.season-seg button{flex:1;padding:9px 6px;font-size:17px}}

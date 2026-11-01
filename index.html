@@ -23,6 +23,10 @@
     <p class="eyebrow">Golden View Classical Academy · Golden, Colorado</p>
     <h1>Golden View<br><span>Track &amp; Field</span></h1>
     <p class="lede">Season tracker: personal records, athlete progress, meet results and the full schedule.</p>
+    <div class="season-switch" aria-label="Choose season">
+      <span class="season-label">Season</span>
+      <div class="season-seg" id="seasonSelect" role="radiogroup" aria-label="Season"></div>
+    </div>
     <div class="hero-meta"><span class="pill" id="seasonPill">Season</span><span class="updated" id="updated"></span></div>
   </div>
 </header>
@@ -43,7 +47,7 @@
   </section>
 
   <section id="athletes" class="section">
-    <div class="section-head"><div><p class="kicker">Roster</p><h2>Athlete Profiles</h2></div></div>
+    <div class="section-head"><div><p class="kicker">Roster</p><h2>Athlete Profiles</h2></div><span class="muted" id="athleteCount"></span></div>
     <div id="athleteGrid" class="athlete-grid"></div>
   </section>
 
