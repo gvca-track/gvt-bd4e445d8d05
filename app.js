@@ -22,6 +22,8 @@
   const fmtDate = (iso, opts) => iso ? new Date(iso + "T12:00:00").toLocaleDateString("en-US", { timeZone: TZ, ...opts }) : "";
   // Grade for a given season, from build_data.py's per-season map (blank when unknown or outside 9-12)
   const gradeIn = (a, se) => (a && a.gradeBySeason ? a.gradeBySeason[se] || "" : "");
+  // Stable anchor for a meet panel, e.g. #meet-2025-kiowa-klassic
+  const meetId = (name, se) => "meet-" + se + "-" + String(name).replace(/\s+20\d\d\s*$/, "").toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const initials = (n) => n.split(/\s+/).map((p) => p[0]).slice(0, 2).join("");
   const tags = (r) => (r.qualified ? '<span class="tag q">Q</span>' : "") + (r.record ? '<span class="tag r">R</span>' : "") + (r.fat ? '<span class="tag a" title="Fully automatic timing">FAT</span>' : "");
   const markText = (m) => String(m).replace(/(\d)[aqQRM]+$/, "$1");
@@ -156,7 +158,7 @@
     m.list.sort((a, b) => eventOrder(a.event) - eventOrder(b.event) || a.event.localeCompare(b.event) || (a.round === "Prelim" ? -1 : 1) || (a.value ?? 1e9) - (b.value ?? 1e9));
     const loc = meetInfo[m.name]?.location;
     const dt = m.date ? new Date(m.date + "T12:00:00") : null;
-    return `<details class="card meet" ${i === 0 ? "open" : ""}><summary>
+    return `<details class="card meet" id="${meetId(m.name, curSeason)}" ${i === 0 ? "open" : ""}><summary>
       <div class="datebox"><div class="m">${dt ? dt.toLocaleString("en-US", { month: "short", timeZone: TZ }) : ""}</div><div class="d">${dt ? dt.getDate() : "—"}</div></div>
       <div class="meet-title"><h3>${esc(m.name)}</h3><div>${esc(m.label)}${loc ? " · " + esc(loc) : ""}</div></div>
       <span class="count">${m.list.length} mark${m.list.length === 1 ? "" : "s"}</span>
@@ -173,10 +175,11 @@
   if (meets.length) {
     const today = new Date().toLocaleDateString("en-CA", { timeZone: TZ });
     const nextIdx = meets.findIndex((m) => m.date && m.date >= today);
-    $("#scheduleTable").innerHTML = `<thead><tr><th>Date</th><th>Day</th><th>Time</th><th>Meet / Event</th><th>Location</th></tr></thead><tbody>` +
+    $("#scheduleTable").innerHTML = `<thead><tr><th>Date</th><th>Day</th><th>Time</th><th>Meet / Event</th><th>Location</th><th class="res-col">Results</th></tr></thead><tbody>` +
       meets.map((m, i) => `<tr class="${m.date && m.date < today ? "past" : ""} ${i === nextIdx ? "next" : ""}">
         <td><b>${fmtDate(m.date, { month: "short", day: "numeric", year: "numeric" })}</b></td><td>${esc(m.day)}</td><td>${esc(m.time) || "TBA"}</td>
-        <td><b style="color:var(--navy)">${esc(m.name)}</b></td><td>${m.mapUrl ? `<a class="map-link" href="${esc(m.mapUrl)}" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>${esc(m.location || "Map")}</a>` : esc(m.location) || "TBA"}</td></tr>`).join("") + "</tbody>";
+        <td><b style="color:var(--navy)">${esc(m.name)}</b>${meetMap[m.name + "|" + curSeason] ? ` <a class="res-link res-inline" href="#${meetId(m.name, curSeason)}" data-meet="${meetId(m.name, curSeason)}" aria-label="Results for ${esc(m.name)}">Results<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>` : ""}</td><td>${m.mapUrl ? `<a class="map-link" href="${esc(m.mapUrl)}" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>${esc(m.location || "Map")}</a>` : esc(m.location) || "TBA"}</td>
+        <td class="res-col">${meetMap[m.name + "|" + curSeason] ? `<a class="res-link" href="#${meetId(m.name, curSeason)}" data-meet="${meetId(m.name, curSeason)}" aria-label="Results for ${esc(m.name)}">Results<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>` : '<span class="muted">—</span>'}</td></tr>`).join("") + "</tbody>";
   }
   }
   // Athlete filters (work on the current season's cards)
@@ -252,6 +255,27 @@
   window.addEventListener("popstate", () => { curSeason = fromUrl(); renderSeasonSel(); render(); });
   renderSeasonSel(); render();
   requestAnimationFrame(updateActive);
+  // Meet-result deep links (#meet-<season>-<slug>): switch season if needed, open, scroll, flash
+  function goToMeet(id, smooth) {
+    const se = (id.match(/^meet-(\d{4})-/) || [])[1];
+    if (se && se !== curSeason && seasons.includes(se)) setSeason(se, true);
+    const el = document.getElementById(id); if (!el) return false;
+    el.open = true;
+    el.scrollIntoView({ behavior: smooth ? "smooth" : "instant", block: "start" });
+    el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
+    return true;
+  }
+  $("#scheduleTable").addEventListener("click", (e) => {
+    const a = e.target.closest("a.res-link"); if (!a) return;
+    e.preventDefault();
+    history.pushState(history.state, "", "#" + a.dataset.meet);
+    goToMeet(a.dataset.meet, true);
+  });
+  const hashMeet = () => { const h = decodeURIComponent(location.hash.slice(1)); if (h.startsWith("meet-")) requestAnimationFrame(() => goToMeet(h, false)); };
+  window.addEventListener("hashchange", hashMeet);
+  hashMeet();
+  if (location.hash.startsWith("#meet-")) { const again = () => setTimeout(() => { const el = document.getElementById(decodeURIComponent(location.hash.slice(1))); if (el) el.scrollIntoView({ behavior: "instant", block: "start" }); }, 150);
+    if (document.readyState === "complete") again(); else window.addEventListener("load", again, { once: true }); document.fonts?.ready.then(again); }
   // Season comparison: every season side by side (e.g. 2024 / 2025 / 2026)
   if (seasons.length > 1) {
     const bySeason = Object.fromEntries(seasons.map((se) => [se, bests(valid.filter((r) => r.season === se))]));

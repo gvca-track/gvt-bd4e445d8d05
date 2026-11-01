@@ -147,3 +147,18 @@ tr.past td{color:var(--muted)} tr.next td{background:#fbf5e2}
 #overview{margin-top:0;padding-top:28px}.hero-inner{padding-bottom:56px}
 .af-search input{width:100%}.ath-filters{min-width:0;max-width:100%}
 .af-badge[hidden],.secnav-season[hidden],.secnav-links a[hidden]{display:none}
+
+/* Schedule -> meet results links */
+.res-col{text-align:right}
+.res-link{display:inline-flex;align-items:center;gap:5px;text-decoration:none;font:600 12.5px Inter,sans-serif;color:var(--navy);background:#fbf5e2;border:1px solid #efe0ad;border-radius:999px;padding:4px 11px;white-space:nowrap;transition:background .15s,border-color .15s}
+.res-link:hover{background:var(--gold);border-color:var(--gold)}
+.res-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.meet{scroll-margin-top:72px}
+.meet.flash{animation:meetflash 2.2s ease-out}
+@keyframes meetflash{0%,25%{box-shadow:0 0 0 3px var(--gold),var(--shadow);border-color:var(--gold)}100%{box-shadow:var(--shadow)}}
+@media (prefers-reduced-motion:reduce){.meet.flash{animation:none;outline:3px solid var(--gold)}}
+@media (max-width:560px){.res-link{padding:4px 9px;font-size:12px}.meet{scroll-margin-top:62px}}
+.res-inline{display:none;margin-left:8px;vertical-align:middle}
+@media (max-width:700px){.res-col{display:none}.res-inline{display:inline-flex}}
+@media (max-width:700px){#scheduleTable td:nth-child(4){white-space:normal;min-width:190px}#scheduleTable .res-inline{display:flex;width:fit-content;margin:5px 0 0}}
+@media (max-width:700px){#scheduleTable th:nth-child(2),#scheduleTable td:nth-child(2){display:none}}
