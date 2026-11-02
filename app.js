@@ -13,7 +13,9 @@
   const results = (data.results || []).filter((r) => !cancelledKeys.has(r.meet + "|" + r.season));
   const valid = results.filter((r) => r.value != null);
   const better = (a, b, field) => (field ? a > b : a < b);
-  const seasons = [...new Set(results.map((r) => r.season).filter(Boolean))].sort();
+  // Seasons with results, plus schedule-only seasons (e.g. 2020, when every meet was cancelled)
+  const resultSeasons = [...new Set(results.map((r) => r.season).filter(Boolean))].sort();
+  const seasons = [...new Set([...resultSeasons, ...(data.meets || []).map((m) => m.season)].filter((s) => /^\d{4}$/.test(s || "")))].sort();
   const latestSeason = seasons[seasons.length - 1] || "";
   const fromUrl = () => { const q = new URLSearchParams(location.search).get("season") || (location.hash.match(/season=(\d{4})/) || [])[1]; return seasons.includes(q) ? q : latestSeason; };
   let curSeason = fromUrl();
@@ -238,13 +240,78 @@
   let ticking = false;
   window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; updateActive(); }); } }, { passive: true });
   window.addEventListener("resize", () => requestAnimationFrame(updateActive));
-  $("#secnavSeason").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) setSeason(b.dataset.v, true); });
-  // Season selector (hero): segmented buttons built from data.json seasons; choice kept in ?season=
+  // Season picker: themed listbox dropdown (hero + sticky nav), newest first; choice kept in ?season=
+  const seasonMeta = Object.fromEntries(seasons.map((se) => {
+    const rs = results.filter((r) => r.season === se);
+    const sched = (data.meets || []).filter((m) => m.season === se);
+    const meetN = new Set(rs.map((r) => r.meet)).size;
+    const cx = new Set(sched.filter(isCancelled).map((m) => m.name)).size;
+    const allCx = !rs.length && cx > 0 && cx === new Set(sched.map((m) => m.name)).size;
+    return [se, allCx ? "All meets cancelled" : rs.length ? `${meetN} meet${meetN === 1 ? "" : "s"} · ${rs.length} marks` : "Schedule only"];
+  }));
+  const pickers = [];
+  const chev = '<svg class="sp-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+  function makePicker(root, compact) {
+    if (!root) return null;
+    const uid = root.id;
+    root.innerHTML = `<button type="button" class="sp-btn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="${uid}-lbl ${uid}-val">
+      <span class="sp-lbl" id="${uid}-lbl">Season</span><span class="sp-val" id="${uid}-val"></span>${chev}</button>
+`;
+    const btn = root.querySelector(".sp-btn");
+    // The list lives in <body> (position:fixed) so the hero's overflow clipping and stacking contexts can't cut it off
+    const list = document.createElement("ul");
+    list.className = "sp-list" + (compact ? " sp-list-mini" : ""); list.id = uid + "-list"; list.setAttribute("role", "listbox"); list.tabIndex = -1; list.setAttribute("aria-labelledby", uid + "-lbl"); list.hidden = true;
+    btn.setAttribute("aria-controls", list.id);
+    document.body.appendChild(list);
+    const opts = [...seasons].reverse();
+    let active = 0, typed = "", typedAt = 0;
+    list.innerHTML = opts.map((se, i) => `<li role="option" id="${uid}-o${se}" data-v="${esc(se)}" class="sp-opt"><span class="sp-y">${esc(se)}</span>${compact ? "" : `<span class="sp-m">${esc(seasonMeta[se])}</span>`}${se === latestSeason ? '<span class="sp-badge">Latest</span>' : ""}<svg class="sp-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></li>`).join("");
+    const items = [...list.children];
+    const setActive = (i) => { active = Math.max(0, Math.min(items.length - 1, i)); items.forEach((li, j) => li.classList.toggle("is-active", j === active)); list.setAttribute("aria-activedescendant", items[active].id); items[active].scrollIntoView({ block: "nearest" }); };
+    const isOpen = () => !list.hidden;
+    function open() {
+      pickers.forEach((p) => p !== api && p.close(false));
+      list.hidden = false; btn.setAttribute("aria-expanded", "true"); root.classList.add("open"); place();
+      setActive(Math.max(0, opts.indexOf(curSeason))); list.focus({ preventScroll: true });
+    }
+    function place() {
+      const r = btn.getBoundingClientRect(), vw = document.documentElement.clientWidth, vh = window.innerHeight;
+      list.style.minWidth = r.width + "px"; list.style.maxWidth = (vw - 16) + "px";
+      const w = list.offsetWidth, h = Math.min(list.scrollHeight, 340);
+      let left = compact ? r.right - w : r.left; left = Math.max(8, Math.min(left, vw - w - 8));
+      const up = r.bottom + 8 + h > vh - 8 && r.top - 8 - h > 8;
+      list.style.left = left + "px";
+      list.style.top = up ? (r.top - 8 - list.offsetHeight) + "px" : (r.bottom + 8) + "px";
+      list.style.maxHeight = (up ? Math.min(340, r.top - 16) : Math.min(340, vh - r.bottom - 16)) + "px";
+    }
+    function close(refocus) { if (!isOpen()) return; list.hidden = true; btn.setAttribute("aria-expanded", "false"); root.classList.remove("open"); if (refocus) btn.focus({ preventScroll: true }); }
+    function choose(i) { const se = opts[i]; close(true); if (se) setSeason(se, true); }
+    btn.addEventListener("click", () => (isOpen() ? close(true) : open()));
+    btn.addEventListener("keydown", (e) => { if (["ArrowDown", "ArrowUp", "Enter", " "].includes(e.key)) { e.preventDefault(); open(); if (e.key === "ArrowUp") setActive(active - 1); } });
+    list.addEventListener("keydown", (e) => {
+      const k = e.key;
+      if (k === "ArrowDown") setActive(active + 1); else if (k === "ArrowUp") setActive(active - 1);
+      else if (k === "Home" || k === "PageUp") setActive(0); else if (k === "End" || k === "PageDown") setActive(items.length - 1);
+      else if (k === "Enter" || k === " ") choose(active);
+      else if (k === "Escape") close(true);
+      else if (k === "Tab") { close(false); return; }
+      else if (/^\d$/.test(k)) { const now = Date.now(); typed = (now - typedAt < 900 ? typed : "") + k; typedAt = now; const i = opts.findIndex((se) => se.endsWith(typed) || se.startsWith(typed)); if (i >= 0) setActive(i); }
+      else return;
+      e.preventDefault();
+    });
+    list.addEventListener("mousemove", (e) => { const li = e.target.closest("li"); if (li) { const i = items.indexOf(li); if (i !== active) setActive(i); } });
+    list.addEventListener("click", (e) => { const li = e.target.closest("li"); if (li) choose(items.indexOf(li)); });
+    const inside = (n) => n && (root.contains(n) || list.contains(n));
+    list.addEventListener("focusout", (e) => { if (!inside(e.relatedTarget)) setTimeout(() => { if (!inside(document.activeElement)) close(false); }, 0); });
+    window.addEventListener("scroll", () => { if (isOpen()) place(); }, { passive: true });
+    const api = { root, list, inside, close, update() { root.querySelector(".sp-val").textContent = curSeason; items.forEach((li) => { const on = li.dataset.v === curSeason; li.setAttribute("aria-selected", on); li.classList.toggle("is-selected", on); }); } };
+    return api;
+  }
+  [makePicker($("#seasonSelect"), false), makePicker($("#secnavSeason"), true)].forEach((p) => p && pickers.push(p));
+  document.addEventListener("pointerdown", (e) => pickers.forEach((p) => { if (!p.inside(e.target)) p.close(false); }));
+  window.addEventListener("resize", () => pickers.forEach((p) => p.close(false)));
   function renderSeasonSel() {
-    const el = $("#seasonSelect"); if (!el) return;
-    el.hidden = seasons.length < 2;
-    el.innerHTML = seasons.map((se) => `<button type="button" role="radio" aria-checked="${se === curSeason}" data-v="${esc(se)}" class="${se === curSeason ? "active" : ""}">${esc(se)}</button>`).join("");
-    const mini = $("#secnavSeason"); if (mini) { mini.hidden = seasons.length < 2; mini.innerHTML = el.innerHTML; }
+    pickers.forEach((p) => { p.root.hidden = seasons.length < 2; p.update(); });
   }
   function setSeason(se, push) {
     if (!seasons.includes(se) || (se === curSeason && push)) return;
@@ -254,7 +321,6 @@
     if (push) history.pushState({ season: se }, "", u);
     renderSeasonSel(); render();
   }
-  $("#seasonSelect")?.addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) setSeason(b.dataset.v, true); });
   window.addEventListener("popstate", () => { curSeason = fromUrl(); renderSeasonSel(); render(); });
   renderSeasonSel(); render();
   requestAnimationFrame(updateActive);
@@ -281,7 +347,7 @@
     if (document.readyState === "complete") again(); else window.addEventListener("load", again, { once: true }); document.fonts?.ready.then(again); }
   // Season Comparison shows only the most recent MAX_COMPARE_SEASONS seasons; the rest of the site keeps all of them.
   const MAX_COMPARE_SEASONS = 4;
-  const cmpSeasons = seasons.slice(-MAX_COMPARE_SEASONS);
+  const cmpSeasons = resultSeasons.slice(-MAX_COMPARE_SEASONS);
   if (cmpSeasons.length > 1) {
     const bySeason = Object.fromEntries(cmpSeasons.map((se) => [se, bests(valid.filter((r) => r.season === se))]));
     const cmp = { gender: "All", group: "All" };

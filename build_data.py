@@ -8,7 +8,7 @@ import csv, json, os, re, sys
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-SKIP = {"DNF", "DNS", "DQ", "NH", "FOUL", "NM", "SCR", ""}
+SKIP = {"DNF", "DNS", "DQ", "NH", "FOUL", "NM", "NT", "SCR", ""}
 
 def read(d, name):
     p = os.path.join(d, name)
@@ -147,7 +147,7 @@ def main():
         "athletes": athletes, "meets": meets, "results": results, "standards": standards,
     }
     dst = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data.json")
-    with open(dst, "w") as f: json.dump(out, f, indent=1)
+    with open(dst, "w") as f: json.dump(out, f, separators=(",", ":"))
     print(f"Wrote {dst}: {len(athletes)} athletes, {len(meets)} meets, {len(results)} results, {len(standards)} standards")
     from collections import Counter
     print("  by season:", dict(sorted(Counter(r["season"] for r in results).items())))
