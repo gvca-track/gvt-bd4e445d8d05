@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Golden View Track &amp; Field · School Records</title>
+<meta name="description" content="Golden View Classical Academy Track & Field school records, all-time top 20 lists, best marks by grade and class, and most improved athletes.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="records.css">
+<script src="tips.js" defer></script>
+<script src="records.js" defer></script>
+</head>
+<body class="records-page">
+<header class="hero">
+  <nav class="topnav">
+    <div class="brand"><span class="crest">GV</span><span>Golden View Track &amp; Field</span></div>
+    <div class="links"><a href="./">Season Tracker</a><a href="records.html" aria-current="page">School Records</a></div>
+  </nav>
+  <div class="hero-inner">
+    <p class="eyebrow">Golden View Classical Academy · Golden, Colorado</p>
+    <h1>School<br><span>Records</span></h1>
+    <p class="lede">The best marks in Golden View history, all-time top 20 lists, and the best performances by grade, class and season.</p>
+    <div class="hero-meta"><span class="pill" id="rangePill">Since 2017</span><span class="updated" id="updated"></span></div>
+  </div>
+</header>
+<nav class="secnav" id="secnav" aria-label="Sections">
+  <div class="secnav-inner">
+    <div class="secnav-links" id="secnavLinks">
+      <a href="./" class="nav-back">‹ Season Tracker</a><a href="#records">Records</a><a href="#top20">Top 20</a><a href="#more">By Grade &amp; Class</a><a href="#notes">Notes</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <section id="records" class="section">
+    <div class="section-head"><div><p class="kicker">All-Time Bests</p><h2>School Records</h2></div>
+      <div class="filters"><div class="seg" id="recGender" role="group" aria-label="Gender"></div></div>
+    </div>
+    <div class="card table-wrap"><table id="recordsTable" class="rec-table"></table></div>
+    <p class="rec-foot muted" id="recFoot"></p>
+  </section>
+
+  <section id="top20" class="section">
+    <div class="section-head"><div><p class="kicker">All-Time Lists</p><h2>Top 20</h2></div>
+      <div class="filters rec-controls">
+        <label class="rec-select"><span class="sr-only">Event</span><select id="t20Event" aria-label="Event"></select></label>
+        <div class="seg" id="t20Gender" role="group" aria-label="Gender"></div>
+      </div>
+    </div>
+    <p class="muted rec-hint">One entry per athlete (their best). <span class="cur-key">Gold rows</span> are athletes competing in the current season.</p>
+    <div class="card table-wrap"><table id="top20Table" class="rec-table"></table></div>
+  </section>
+
+  <section id="more" class="section">
+    <div class="section-head"><div><p class="kicker">Granular Views</p><h2>By Grade &amp; Class</h2></div></div>
+    <div class="rec-tabs" role="tablist" aria-label="Views" id="moreTabs"></div>
+    <div class="filters rec-controls rec-subcontrols" id="moreControls"></div>
+    <div id="moreBody"></div>
+  </section>
+
+  <section id="notes" class="section">
+    <div class="section-head"><div><p class="kicker">About the Data</p><h2>Notes</h2></div></div>
+    <div class="card rec-notes" id="notesBody"></div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div><strong>Golden View Classical Academy</strong> · Track &amp; Field · Golden, CO · <a href="./">Season Tracker</a></div>
+  <div class="muted">Marks: <b>h</b> = hand-timed · <b>w</b> = wind-aided (&gt; +2.0 m/s) · <b>x</b> = exhibition · <b>FAT</b> = fully automatic timing. Data sourced from MileSplit results since 2017 plus the Historical Records tab.</div>
+</footer>
+</body>
+</html>

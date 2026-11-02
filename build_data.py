@@ -2,7 +2,8 @@
 """Regenerate data.json from CSV exports of the Google Sheet tabs.
 
 Usage: python3 build_data.py [csv_dir]   (default: ./data)
-Expects roster.csv, meets.csv, results.csv, standards.csv (standards optional).
+Expects roster.csv, meets.csv, results.csv, standards.csv (standards optional),
+historical_records.csv (optional; Historical Records tab: Event, Gender, Athlete, Mark, Year, Meet, Notes).
 """
 import csv, json, os, re, sys
 from datetime import datetime
@@ -139,16 +140,35 @@ def main():
         a["gradeBySeason"] = gmap
         a["baseSeason"] = str(base_season) if base_season else ""
 
+    # Historical Records tab (pre-2017 / non-MileSplit marks entered by the coach), merged into records pages.
+    historical = []
+    for h in read(d, "historical_records.csv"):
+        ev, mark = h.get("Event", ""), h.get("Mark", "")
+        if not (ev and mark and h.get("Athlete")): continue
+        note = h.get("Notes", "")
+        hand = bool(re.search(r"\d[hH]$", mark)) or "hand" in note.lower()
+        clean = re.sub(r"(?<=\d)[hH]$", "", mark)
+        gm = re.search(r"grade\s*(9|10|11|12)", note, re.I)
+        wm = re.search(r"wind\s*([+-]?\d+(?:\.\d+)?)", note, re.I)
+        historical.append({
+            "athlete": h["Athlete"], "event": ev, "group": group(ev), "field": is_field(ev), "relay": group(ev) == "Relays",
+            "gender": h.get("Gender", ""), "mark": clean, "value": parse_mark(clean, ev), "handTimed": hand,
+            "season": season_year(h.get("Year", "")), "meet": h.get("Meet", ""), "notes": note,
+            "grade": gm.group(1) if gm else "", "wind": wm.group(1) if wm else "", "historical": True,
+        })
+    historical = [h for h in historical if h["value"] is not None]
+
     out = {
         "team": "Golden View Classical Academy",
         "generated": datetime.now(ZoneInfo("America/Denver")).isoformat(timespec="minutes"),
         "groups": GROUPS,
         "seasons": sorted({season_year(r["season"]) for r in results if season_year(r["season"])}),
-        "athletes": athletes, "meets": meets, "results": results, "standards": standards,
+        "athletes": athletes, "meets": meets, "results": results, "standards": standards, "historical": historical,
+        "historical": historical,
     }
     dst = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data.json")
     with open(dst, "w") as f: json.dump(out, f, separators=(",", ":"))
-    print(f"Wrote {dst}: {len(athletes)} athletes, {len(meets)} meets, {len(results)} results, {len(standards)} standards")
+    print(f"Wrote {dst}: {len(athletes)} athletes, {len(meets)} meets, {len(results)} results, {len(standards)} standards, {len(historical)} historical")
     from collections import Counter
     print("  by season:", dict(sorted(Counter(r["season"] for r in results).items())))
     print("  by group:", dict(Counter(r["group"] for r in results)))

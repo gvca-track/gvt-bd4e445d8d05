@@ -5,6 +5,8 @@ Chart.js and Google Fonts load from CDNs.
 
 ## Files
 - `index.html`, `styles.css`, `app.js`: the site. `app.js` loads `data.json` and renders everything.
+- `records.html`, `records.js`, `records.css`: the School Records page (records, all-time top 20, by grade/class, most improved, single-season bests). Computed in the browser from the same `data.json`.
+- `tips.js`: shared tap/hover tooltips for both pages.
 - `data.json`: generated data. Don't edit by hand.
 - `build_data.py`: turns CSV exports of the Google Sheet into `data.json`.
 - `data/roster.csv`, `data/meets.csv`, `data/results.csv`, `data/standards.csv`: the CSV exports.
@@ -18,9 +20,16 @@ Chart.js and Google Fonts load from CDNs.
    the "Last updated" time in America/Denver.
 4. Commit `data/` and `data.json`. Nothing else needs to change.
 
+## Historical (pre-2017) records
+Add rows to the **Historical Records** tab of the team sheet (Event, Gender, Athlete, Mark, Year, Meet, Notes),
+export it as `data/historical_records.csv`, and run `python3 build_data.py`. Notes may hold `Grade 12`, relay runners,
+`hand-timed` (or end the mark with `h`), or `wind +2.4`. Rows merge into school records and top-20 lists, tagged HIST.
+
 ## How marks work
 - Suffixes `a` (electronic/FAT timing), `Q` (qualified) and `R` (record) are stripped before comparing.
 - Running events: lower is better (`12.36`, `1:04.35`). Field events (`18-04.5` feet-inches): higher is better.
+- Records page: hand-timed marks (`hand-timed` in Notes) rank with +0.24s (under 400m) / +0.14s (400m+) and show `h`;
+  wind over +2.0 (or `wind-aided` in Notes) shows `w` and is excluded from records/lists.
 - `DNF`, `DNS`, `DQ`, `NH`, `FOUL` are shown in meet results but never count as bests.
 - The **Results** `Notes` column holds the meet date (`MM/DD` or `MM/DD-MM/DD`), and `Season` gives the year.
 
