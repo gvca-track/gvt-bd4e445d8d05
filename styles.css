@@ -206,3 +206,21 @@ tr.past td{color:var(--muted)} tr.next td{background:#fbf5e2}
 .sp-cmp .sp-lbl{color:var(--muted)}.sp-cmp .sp-val{color:var(--navy)}
 .sp-cmp .sp-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @media (max-width:560px){.sp-cmp{display:block;width:100%}.sp-cmp .sp-btn{width:100%;justify-content:space-between}.sp-cmp .sp-val{margin-right:auto}}
+/* Meets page: athlete name menu */
+.ath-link{border:0;background:none;padding:0;font:inherit;color:var(--navy);font-weight:600;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(201,162,39,.6);text-underline-offset:3px;text-align:left}
+.ath-link:hover,.ath-link[aria-expanded="true"]{color:var(--navy3);text-decoration-color:var(--gold)}
+.ath-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}
+.ath-link.sm{font-weight:500;font-size:12.5px}
+.runners{display:block;font-size:12.5px;color:var(--muted);white-space:normal;max-width:320px;margin-top:2px}
+.ath-menu{position:fixed;z-index:200;min-width:190px;background:#fff;border:1px solid var(--border);border-top:3px solid var(--gold);border-radius:12px;box-shadow:0 10px 30px rgba(11,31,58,.22);padding:6px;animation:spIn .12s ease-out}
+.ath-menu[hidden]{display:none}
+.ath-menu-h{font:700 11px Inter,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:6px 10px 4px}
+.ath-menu a{display:block;padding:10px 12px;border-radius:8px;text-decoration:none;color:var(--navy);font:600 14px Inter,sans-serif}
+.ath-menu a:hover,.ath-menu a:focus{background:var(--gold);color:var(--navy);outline:none}
+.athlete.flash{animation:meetflash 2.2s ease-out}
+.cmp-chip{display:inline-flex;align-items:center;gap:6px;background:#fbefd0;color:var(--navy);border-radius:999px;padding:5px 6px 5px 12px;font-size:13px}
+.cmp-chip[hidden]{display:none}
+.cmp-chip button{border:0;background:var(--navy);color:#fff;width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:14px;line-height:1}
+.meets-main #schedule{padding-top:36px}
+.links a[aria-current="page"]{color:var(--gold2)}.secnav-links a.nav-ext,.secnav-links a.nav-back{color:var(--gold2)}
+.ath-link{-webkit-tap-highlight-color:transparent}

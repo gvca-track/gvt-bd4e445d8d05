@@ -1,7 +1,12 @@
 /* Golden View Track & Field season tracker. Loads data.json (built by build_data.py). */
 (async function () {
-  const $ = (s) => document.querySelector(s);
+  const PAGE = document.body.dataset.page || "tracker"; // "tracker" (index.html) or "meets" (meets.html)
+  const $ = (s) => document.querySelector(s) || document.createElement("div");
+  const $q = (s) => document.querySelector(s);
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  // Run a deep-link scroll now and again once fonts/charts/layout settle (the browser's own hash jump can land early)
+  const settle = (fn) => { requestAnimationFrame(fn); const later = () => [80, 400].forEach((t) => setTimeout(fn, t));
+    if (document.readyState === "complete") later(); else window.addEventListener("load", later, { once: true }); document.fonts?.ready.then(() => setTimeout(fn, 0)); };
   const TZ = "America/Denver";
   let data;
   try { data = await (await fetch("data.json", { cache: "no-store" })).json(); }
@@ -33,6 +38,14 @@
   const tags = (r) => (r.qualified ? '<span class="tag q" data-tip="Qualified" tabindex="0" role="button" aria-label="Q: Qualified">Q</span>' : "") + (r.record ? '<span class="tag r" data-tip="Record" tabindex="0" role="button" aria-label="R: Record">R</span>' : "") + (r.fat ? '<span class="tag a" data-tip="Fully automatic timing" tabindex="0" role="button" aria-label="FAT: Fully automatic timing">FAT</span>' : "");
   const markText = (m) => String(m).replace(/(\d)[aqQRM]+$/, "$1");
 
+  // Meet results: athlete names (and relay runners) open a small menu (View profile / Compare seasons)
+  const nameBtn = (n, se, cls = "") => `<button type="button" class="ath-link ${cls}" data-ath="${esc(n)}" data-se="${esc(se)}" aria-haspopup="menu" aria-expanded="false">${esc(n)}</button>`;
+  const runnersOf = (notes) => (notes || "").split(";").slice(1).map((x) => x.trim()).find((x) => x.includes(",") && !/exhibition|hand|wind|runners not listed|no mark/i.test(x)) || "";
+  function athBtn(r) {
+    if (!r.relay) return athletesByName[r.athlete] ? nameBtn(r.athlete, r.season) : esc(r.athlete);
+    const rs = runnersOf(r.notes).split(",").map((x) => x.trim()).filter(Boolean);
+    return esc(r.athlete) + (rs.length ? `<span class="runners">${rs.map((n) => athletesByName[n] ? nameBtn(n, r.season, "sm") : esc(n)).join(", ")}</span>` : "");
+  }
   // best mark per athlete+event (+season)
   function bests(list) {
     const map = {};
@@ -57,6 +70,7 @@
     $("#updated").textContent = "Last updated " + d.toLocaleString("en-US", { timeZone: TZ, month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }) + " MT";
   }
 
+  if (PAGE === "tracker") {
   // Overview stats
   const meetsCompeted = new Set(curResults.map((r) => r.meet)).size;
   const events = [...new Set(curResults.map((r) => r.event))];
@@ -154,6 +168,7 @@
   const initCharts = () => document.querySelectorAll(".ev-tabs").forEach((t) => drawChart(+t.dataset.i, t.querySelector("button").dataset.e));
   if (window.Chart) initCharts(); else window.addEventListener("load", initCharts, { once: true });
 
+  }
   // Meet results grouped by meet
   const meetMap = {};
   results.filter((r) => r.season === curSeason).forEach((r) => { const k = r.meet + "|" + r.season; (meetMap[k] = meetMap[k] || { name: r.meet, date: r.date, label: r.dateLabel, list: [] }).list.push(r); if ((r.date || "") < (meetMap[k].date || "~")) meetMap[k].date = r.date; });
@@ -169,7 +184,7 @@
       <span class="count">${m.list.length} mark${m.list.length === 1 ? "" : "s"}</span>
       <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></summary>
       <div class="table-wrap"><table><thead><tr><th>Event</th><th>Athlete</th><th>Mark</th><th>Place</th><th>Round</th><th>Wind</th></tr></thead><tbody>
-      ${m.list.map((r) => `<tr><td>${esc(r.event)}</td><td>${esc(r.athlete)}</td><td class="mark">${esc(markText(r.mark))}${tags(r)}${prSet.has(r) ? '<span class="pr-flag" data-tip="Personal record" tabindex="0" role="button" aria-label="PR: Personal record">PR</span>' : ""}</td><td>${esc(r.place) || "—"}</td><td>${esc(r.round)}</td><td>${esc(r.wind) || "—"}</td></tr>`).join("")}
+      ${m.list.map((r) => `<tr><td>${esc(r.event)}</td><td>${athBtn(r)}</td><td class="mark">${esc(markText(r.mark))}${tags(r)}${prSet.has(r) ? '<span class="pr-flag" data-tip="Personal record" tabindex="0" role="button" aria-label="PR: Personal record">PR</span>' : ""}</td><td>${esc(r.place) || "—"}</td><td>${esc(r.round)}</td><td>${esc(r.wind) || "—"}</td></tr>`).join("")}
       </tbody></table></div></details>`;
   }).join("") : "";
   $("#results").hidden = !meetsSorted.length;
@@ -361,8 +376,11 @@
       return { ath, ev, cells, field: any.field, group: any.group, gender: genderOf(any), n: cells.filter(Boolean).length }; })
       .sort((a, b) => a.gender.localeCompare(b.gender) || eventOrder(a.ev) - eventOrder(b.ev) || b.n - a.n || a.ath.localeCompare(b.ath));
   }
-  if (cmpEnds.length) {
-    const cmp = { gender: "All", group: "All" };
+  if (cmpEnds.length && $q("#compare")) {
+    const cmp = { gender: "All", group: "All", athlete: "" };
+    const linkP = new URLSearchParams(location.search + "&" + (location.hash.split("?")[1] || ""));
+    if (location.hash.startsWith("#compare") && athletesByName[linkP.get("athlete")]) cmp.athlete = linkP.get("athlete");
+    if (cmpEnds.includes(linkP.get("end"))) cmpEnd = linkP.get("end");
     buildCmp();
     const delta = (p, c) => { const d = c.value - p.value; const imp = c.field ? d > 0 : d < 0; const txt = c.field ? `${d > 0 ? "+" : ""}${d.toFixed(1)} in` : `${d > 0 ? "+" : ""}${d.toFixed(2)} s`; return `<span style="color:${d === 0 ? "#5d6b82" : imp ? "#17703d" : "#a33"}">${txt}</span>`; };
     const isRelay = (n) => /^(Boys|Girls)\b/.test(n); const lastName = (n) => n.split(" ").pop();
@@ -371,7 +389,8 @@
     const sortTh = (key, label) => { const on = cmp.sortKey === key; const dir = on ? cmp.sortDir : "";
       return `<th aria-sort="${on ? (dir === "asc" ? "ascending" : "descending") : "none"}"><button type="button" class="th-sort${on ? " on" : ""}" data-sort="${key}" aria-label="Sort by ${label}${on ? (dir === "asc" ? ", ascending" : ", descending") : ""}">${label}<span class="sort-ind" aria-hidden="true">${on ? (dir === "asc" ? "▲" : "▼") : "↕"}</span></button></th>`; };
     function renderCmp() {
-      let rows = rowsAll.filter((r) => (cmp.gender === "All" || r.gender === cmp.gender) && (cmp.group === "All" || r.group === cmp.group) && (cmp.multi ? r.n > 1 : true));
+      let rows = rowsAll.filter((r) => (cmp.gender === "All" || r.gender === cmp.gender) && (cmp.group === "All" || r.group === cmp.group) && (cmp.multi ? r.n > 1 : true) && (!cmp.athlete || r.ath === cmp.athlete));
+      $("#cmpAthlete").hidden = !cmp.athlete; $("#cmpAthlete").innerHTML = cmp.athlete ? `Athlete: <b>${esc(cmp.athlete)}</b> <button type="button" aria-label="Clear athlete filter">×</button>` : "";
       if (cmp.sortKey) { const m = cmp.sortDir === "desc" ? -1 : 1; const [p, q] = cmp.sortKey === "ath" ? [byAth, byEv] : [byEv, byAth];
         rows = [...rows].sort((a, b) => m * p(a, b) || q(a, b)); }
       $("#compareTable").innerHTML = `<thead><tr>${sortTh("ath", "Athlete")}${sortTh("ev", "Event")}${cmpSeasons.map((se) => `<th>${esc(se)} Best</th>`).join("")}<th>Latest change</th><th>Overall change</th></tr></thead><tbody>` +
@@ -395,8 +414,42 @@
       meta: (se) => "Compares " + cmpWindow(se).join(", ") });
     if (cmpPicker) { pickers.push(cmpPicker); cmpPicker.update(); }
     $("#compareSeasons").textContent = cmpSeasons.join(" · ");
+    $("#cmpAthlete").onclick = (e) => { if (e.target.closest("button")) { cmp.athlete = ""; const u = new URL(location.href); u.searchParams.delete("athlete"); u.searchParams.delete("end"); u.hash = "compare"; history.replaceState(history.state, "", u); renderCmp(); } };
     renderCmp();
     $("#compare").hidden = false;
+    if (location.hash.startsWith("#compare")) { const go = () => $q("#compare")?.scrollIntoView({ block: "start", behavior: "instant" }); settle(go); }
+  }
+
+  // Profile deep link: index.html?season=YYYY&athlete=Name#athletes -> scroll to and flash that athlete's card
+  const linkAth = new URLSearchParams(location.search).get("athlete");
+  if (PAGE === "tracker" && linkAth && !location.hash.startsWith("#compare")) {
+    const go = () => { let card = [...document.querySelectorAll("#athleteGrid .athlete")].find((c) => c.dataset.name === linkAth.toLowerCase());
+      if (card && card.hidden) { $("#afClear").click(); card = [...document.querySelectorAll("#athleteGrid .athlete")].find((c) => c.dataset.name === linkAth.toLowerCase()); }
+      if (!card) { $("#afName").value = linkAth; $("#afName").dispatchEvent(new Event("input")); $q("#athletes")?.scrollIntoView({ block: "start" }); return; }
+      card.scrollIntoView({ block: "center", behavior: "instant" }); if (!card.classList.contains("flash")) card.classList.add("flash"); };
+    settle(go);
+  }
+  // Athlete menu on meet results
+  if (PAGE === "meets") {
+    const menu = document.createElement("div"); menu.className = "ath-menu"; menu.setAttribute("role", "menu"); menu.hidden = true; document.body.appendChild(menu);
+    let owner = null;
+    const closeMenu = (refocus) => { if (menu.hidden) return; menu.hidden = true; owner?.setAttribute("aria-expanded", "false"); if (refocus) owner?.focus(); owner = null; };
+    const openMenu = (btn) => {
+      owner = btn; const n = btn.dataset.ath, se = btn.dataset.se, enc = encodeURIComponent(n);
+      menu.innerHTML = `<div class="ath-menu-h">${esc(n)} · ${esc(se)}</div><a role="menuitem" href="./?season=${se}&athlete=${enc}#athletes">View profile</a><a role="menuitem" href="./?athlete=${enc}&end=${se}#compare">Compare seasons</a>`;
+      menu.hidden = false; btn.setAttribute("aria-expanded", "true"); place();
+      menu.querySelector("a").focus({ preventScroll: true });
+    };
+    const place = () => { if (!owner) return; const r = owner.getBoundingClientRect(), vw = document.documentElement.clientWidth;
+      if (r.bottom < 0 || r.top > innerHeight) return closeMenu(false);
+      const w = menu.offsetWidth, h = menu.offsetHeight;
+      menu.style.left = Math.max(8, Math.min(r.left, vw - w - 8)) + "px";
+      menu.style.top = (r.bottom + 6 + h > innerHeight && r.top > h + 6 ? r.top - h - 6 : r.bottom + 6) + "px"; };
+    document.addEventListener("click", (e) => { const b = e.target.closest(".ath-link"); if (b) { e.preventDefault(); if (owner === b) closeMenu(false); else { closeMenu(false); openMenu(b); } } else if (!menu.contains(e.target)) closeMenu(false); });
+    menu.addEventListener("keydown", (e) => { const items = [...menu.querySelectorAll("a")], i = items.indexOf(document.activeElement);
+      if (e.key === "Escape") { e.preventDefault(); closeMenu(true); } else if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); items[(i + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length].focus(); } else if (e.key === "Tab") closeMenu(false); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(true); });
+    addEventListener("scroll", () => { if (!menu.hidden) place(); }, { passive: true }); addEventListener("resize", () => closeMenu(false));
   }
 
   // Standards (shown when the Standards tab has rows)
