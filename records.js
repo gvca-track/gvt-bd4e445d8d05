@@ -163,3 +163,23 @@
     <li>${excluded.length} result${excluded.length === 1 ? "" : "s"} that look like data-entry errors are left out of these lists (field marks without feet-inches such as "6.50", and impossible times such as a 1.25 in the 1600m); they still appear in meet results. Marks tagged ${tag("odd", "?", "Unusual mark")} have an unusual inch fraction and should be verified.</li>
     <li>Grades come from the roster (MileSplit grade as of the latest season). Relay records list runners when the results file names them.</li></ul>`;
 })();
+
+// Sticky section nav: scroll-spy highlight (same behavior as the tracker), keeps the active link in view on mobile
+(() => {
+  const nav = document.getElementById("secnav"), wrap = document.getElementById("secnavLinks");
+  const links = [...wrap.querySelectorAll('a[href^="#"]')];
+  let last = null, ticking = false;
+  function update() {
+    const y = (nav.offsetHeight || 0) + 48;
+    let cur = null;
+    links.forEach((a) => { const s = document.querySelector(a.getAttribute("href")); if (s && !s.hidden && s.getBoundingClientRect().top <= y) cur = a; });
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) cur = links[links.length - 1];
+    links.forEach((a) => { const on = a === cur; a.classList.toggle("active", on); if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
+    if (cur && cur !== last) { const l = cur.offsetLeft - 12; if (l < wrap.scrollLeft || cur.offsetLeft + cur.offsetWidth > wrap.scrollLeft + wrap.clientWidth) wrap.scrollTo({ left: l, behavior: "smooth" }); }
+    last = cur;
+    nav.classList.toggle("stuck", nav.getBoundingClientRect().top <= 0 && scrollY > 0);
+  }
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; update(); }); } }, { passive: true });
+  addEventListener("resize", () => requestAnimationFrame(update));
+  addEventListener("load", update); update();
+})();
