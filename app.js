@@ -251,11 +251,12 @@
   }));
   const pickers = [];
   const chev = '<svg class="sp-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
-  function makePicker(root, compact) {
+  function makePicker(root, compact, cfg = {}) {
+    const getV = cfg.get || (() => curSeason), setV = cfg.set || ((se) => setSeason(se, true));
     if (!root) return null;
     const uid = root.id;
     root.innerHTML = `<button type="button" class="sp-btn" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="${uid}-lbl ${uid}-val">
-      <span class="sp-lbl" id="${uid}-lbl">Season</span><span class="sp-val" id="${uid}-val"></span>${chev}</button>
+      <span class="sp-lbl" id="${uid}-lbl">${cfg.label || "Season"}</span><span class="sp-val" id="${uid}-val"></span>${chev}</button>
 `;
     const btn = root.querySelector(".sp-btn");
     // The list lives in <body> (position:fixed) so the hero's overflow clipping and stacking contexts can't cut it off
@@ -263,16 +264,16 @@
     list.className = "sp-list" + (compact ? " sp-list-mini" : ""); list.id = uid + "-list"; list.setAttribute("role", "listbox"); list.tabIndex = -1; list.setAttribute("aria-labelledby", uid + "-lbl"); list.hidden = true;
     btn.setAttribute("aria-controls", list.id);
     document.body.appendChild(list);
-    const opts = [...seasons].reverse();
+    const opts = [...(cfg.options || seasons)].reverse();
     let active = 0, typed = "", typedAt = 0;
-    list.innerHTML = opts.map((se, i) => `<li role="option" id="${uid}-o${se}" data-v="${esc(se)}" class="sp-opt"><span class="sp-y">${esc(se)}</span>${compact ? "" : `<span class="sp-m">${esc(seasonMeta[se])}</span>`}${se === latestSeason ? '<span class="sp-badge">Latest</span>' : ""}<svg class="sp-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></li>`).join("");
+    list.innerHTML = opts.map((se, i) => `<li role="option" id="${uid}-o${se}" data-v="${esc(se)}" class="sp-opt"><span class="sp-y">${esc(se)}</span>${compact ? "" : `<span class="sp-m">${esc(cfg.meta ? cfg.meta(se) : seasonMeta[se])}</span>`}${se === latestSeason ? '<span class="sp-badge">Latest</span>' : ""}<svg class="sp-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></li>`).join("");
     const items = [...list.children];
     const setActive = (i) => { active = Math.max(0, Math.min(items.length - 1, i)); items.forEach((li, j) => li.classList.toggle("is-active", j === active)); list.setAttribute("aria-activedescendant", items[active].id); items[active].scrollIntoView({ block: "nearest" }); };
     const isOpen = () => !list.hidden;
     function open() {
       pickers.forEach((p) => p !== api && p.close(false));
       list.hidden = false; btn.setAttribute("aria-expanded", "true"); root.classList.add("open"); place();
-      setActive(Math.max(0, opts.indexOf(curSeason))); list.focus({ preventScroll: true });
+      setActive(Math.max(0, opts.indexOf(getV()))); list.focus({ preventScroll: true });
     }
     function place() {
       const r = btn.getBoundingClientRect(), vw = document.documentElement.clientWidth, vh = window.innerHeight;
@@ -285,7 +286,7 @@
       list.style.maxHeight = (up ? Math.min(340, r.top - 16) : Math.min(340, vh - r.bottom - 16)) + "px";
     }
     function close(refocus) { if (!isOpen()) return; list.hidden = true; btn.setAttribute("aria-expanded", "false"); root.classList.remove("open"); if (refocus) btn.focus({ preventScroll: true }); }
-    function choose(i) { const se = opts[i]; close(true); if (se) setSeason(se, true); }
+    function choose(i) { const se = opts[i]; close(true); if (se) setV(se); }
     btn.addEventListener("click", () => (isOpen() ? close(true) : open()));
     btn.addEventListener("keydown", (e) => { if (["ArrowDown", "ArrowUp", "Enter", " "].includes(e.key)) { e.preventDefault(); open(); if (e.key === "ArrowUp") setActive(active - 1); } });
     list.addEventListener("keydown", (e) => {
@@ -304,7 +305,7 @@
     const inside = (n) => n && (root.contains(n) || list.contains(n));
     list.addEventListener("focusout", (e) => { if (!inside(e.relatedTarget)) setTimeout(() => { if (!inside(document.activeElement)) close(false); }, 0); });
     window.addEventListener("scroll", () => { if (isOpen()) place(); }, { passive: true });
-    const api = { root, list, inside, close, update() { root.querySelector(".sp-val").textContent = curSeason; items.forEach((li) => { const on = li.dataset.v === curSeason; li.setAttribute("aria-selected", on); li.classList.toggle("is-selected", on); }); } };
+    const api = { root, list, inside, close, update() { root.querySelector(".sp-val").textContent = getV(); items.forEach((li) => { const on = li.dataset.v === getV(); li.setAttribute("aria-selected", on); li.classList.toggle("is-selected", on); }); } };
     return api;
   }
   [makePicker($("#seasonSelect"), false), makePicker($("#secnavSeason"), true)].forEach((p) => p && pickers.push(p));
@@ -347,14 +348,22 @@
     if (document.readyState === "complete") again(); else window.addEventListener("load", again, { once: true }); document.fonts?.ready.then(again); }
   // Season Comparison shows only the most recent MAX_COMPARE_SEASONS seasons; the rest of the site keeps all of them.
   const MAX_COMPARE_SEASONS = 4;
-  const cmpSeasons = resultSeasons.slice(-MAX_COMPARE_SEASONS);
-  if (cmpSeasons.length > 1) {
+  // Ending-season picker: compare the chosen season plus the previous seasons that have results (2020 etc. skipped).
+  const cmpEnds = resultSeasons.slice(1);
+  let cmpEnd = resultSeasons[resultSeasons.length - 1];
+  let cmpSeasons = [], rowsAll = [];
+  const cmpWindow = (end) => { const i = resultSeasons.indexOf(end); return resultSeasons.slice(Math.max(0, i - MAX_COMPARE_SEASONS + 1), i + 1); };
+  function buildCmp() {
+    cmpSeasons = cmpWindow(cmpEnd);
     const bySeason = Object.fromEntries(cmpSeasons.map((se) => [se, bests(valid.filter((r) => r.season === se))]));
-    const cmp = { gender: "All", group: "All" };
     const keys = [...new Set(cmpSeasons.flatMap((se) => Object.keys(bySeason[se])))];
-    const rowsAll = keys.map((k) => { const [ath, ev] = k.split("|"); const cells = cmpSeasons.map((se) => bySeason[se][k]); const any = cells.find(Boolean);
+    rowsAll = keys.map((k) => { const [ath, ev] = k.split("|"); const cells = cmpSeasons.map((se) => bySeason[se][k]); const any = cells.find(Boolean);
       return { ath, ev, cells, field: any.field, group: any.group, gender: genderOf(any), n: cells.filter(Boolean).length }; })
       .sort((a, b) => a.gender.localeCompare(b.gender) || eventOrder(a.ev) - eventOrder(b.ev) || b.n - a.n || a.ath.localeCompare(b.ath));
+  }
+  if (cmpEnds.length) {
+    const cmp = { gender: "All", group: "All" };
+    buildCmp();
     const delta = (p, c) => { const d = c.value - p.value; const imp = c.field ? d > 0 : d < 0; const txt = c.field ? `${d > 0 ? "+" : ""}${d.toFixed(1)} in` : `${d > 0 ? "+" : ""}${d.toFixed(2)} s`; return `<span style="color:${d === 0 ? "#5d6b82" : imp ? "#17703d" : "#a33"}">${txt}</span>`; };
     const isRelay = (n) => /^(Boys|Girls)\b/.test(n); const lastName = (n) => n.split(" ").pop();
     const byAth = (a, b) => isRelay(a.ath) - isRelay(b.ath) || lastName(a.ath).localeCompare(lastName(b.ath)) || a.ath.localeCompare(b.ath);
@@ -380,6 +389,11 @@
       cmp.sortDir = cmp.sortKey === k && cmp.sortDir === "asc" ? "desc" : "asc"; cmp.sortKey = k; renderCmp();
       $(`#compareTable button[data-sort="${k}"]`)?.focus(); });
     $("#cmpMulti").onchange = (e) => { cmp.multi = e.target.checked; renderCmp(); };
+    let cmpPicker;
+    const setEnd = (se) => { if (se === cmpEnd) return; cmpEnd = se; buildCmp(); $("#compareSeasons").textContent = cmpSeasons.join(" · "); cmpPicker?.update(); renderCmp(); };
+    cmpPicker = makePicker($("#cmpEnd"), false, { label: "Ending season", options: cmpEnds, get: () => cmpEnd, set: setEnd,
+      meta: (se) => "Compares " + cmpWindow(se).join(", ") });
+    if (cmpPicker) { pickers.push(cmpPicker); cmpPicker.update(); }
     $("#compareSeasons").textContent = cmpSeasons.join(" · ");
     renderCmp();
     $("#compare").hidden = false;

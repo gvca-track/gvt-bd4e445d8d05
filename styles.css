@@ -200,3 +200,9 @@ tr.past td{color:var(--muted)} tr.next td{background:#fbf5e2}
 .sp-list-mini .sp-badge{justify-self:start}
 @media (max-width:560px){.sp-hero{display:block}.sp-hero .sp-btn{width:100%;justify-content:space-between}.sp-hero .sp-val{margin-right:auto}.sp-mini .sp-lbl{display:none}.sp-mini .sp-btn{padding:4px 8px}}
 @media (prefers-reduced-motion:reduce){.sp-list{animation:none}.sp-chev{transition:none}}
+/* Ending-season picker in Season Comparison (light background variant) */
+.sp-cmp .sp-btn{background:#fff;border-color:var(--border);color:var(--navy);min-height:38px;padding:4px 12px;border-radius:10px;box-shadow:var(--shadow);gap:8px;-webkit-backdrop-filter:none;backdrop-filter:none}
+.sp-cmp .sp-btn:hover{background:#f7f9fc}
+.sp-cmp .sp-lbl{color:var(--muted)}.sp-cmp .sp-val{color:var(--navy)}
+.sp-cmp .sp-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media (max-width:560px){.sp-cmp{display:block;width:100%}.sp-cmp .sp-btn{width:100%;justify-content:space-between}.sp-cmp .sp-val{margin-right:auto}}
