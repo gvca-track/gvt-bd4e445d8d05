@@ -7,7 +7,10 @@
   try { data = await (await fetch("data.json", { cache: "no-store" })).json(); }
   catch (e) { document.querySelector("main").innerHTML = '<p class="empty">Could not load data.json. Serve this folder over HTTP (see README).</p>'; return; }
 
-  const results = data.results || [];
+  // Meets marked "Cancelled" in the sheet's Results column appear only on the schedule (never in results, counts, or comparison).
+  const isCancelled = (m) => /^cancel+ed$/i.test((m.status || "").trim());
+  const cancelledKeys = new Set((data.meets || []).filter(isCancelled).map((m) => m.name + "|" + m.season));
+  const results = (data.results || []).filter((r) => !cancelledKeys.has(r.meet + "|" + r.season));
   const valid = results.filter((r) => r.value != null);
   const better = (a, b, field) => (field ? a > b : a < b);
   const seasons = [...new Set(results.map((r) => r.season).filter(Boolean))].sort();
@@ -174,12 +177,12 @@
   $("#schedule").hidden = !meets.length;
   if (meets.length) {
     const today = new Date().toLocaleDateString("en-CA", { timeZone: TZ });
-    const nextIdx = meets.findIndex((m) => m.date && m.date >= today);
+    const nextIdx = meets.findIndex((m) => m.date && m.date >= today && !isCancelled(m));
     $("#scheduleTable").innerHTML = `<thead><tr><th>Date</th><th>Day</th><th>Time</th><th>Meet / Event</th><th>Location</th><th class="res-col">Results</th></tr></thead><tbody>` +
-      meets.map((m, i) => `<tr class="${m.date && m.date < today ? "past" : ""} ${i === nextIdx ? "next" : ""}">
+      meets.map((m, i) => { const cx = isCancelled(m); const hasRes = !cx && meetMap[m.name + "|" + curSeason]; return `<tr class="${m.date && m.date < today ? "past" : ""} ${i === nextIdx ? "next" : ""} ${cx ? "cancelled" : ""}">
         <td><b>${fmtDate(m.date, { month: "short", day: "numeric", year: "numeric" })}</b></td><td>${esc(m.day)}</td><td>${esc(m.time) || "TBA"}</td>
-        <td><b style="color:var(--navy)">${esc(m.name)}</b>${meetMap[m.name + "|" + curSeason] ? ` <a class="res-link res-inline" href="#${meetId(m.name, curSeason)}" data-meet="${meetId(m.name, curSeason)}" aria-label="Results for ${esc(m.name)}">Results<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>` : ""}</td><td>${m.mapUrl ? `<a class="map-link" href="${esc(m.mapUrl)}" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>${esc(m.location || "Map")}</a>` : esc(m.location) || "TBA"}</td>
-        <td class="res-col">${meetMap[m.name + "|" + curSeason] ? `<a class="res-link" href="#${meetId(m.name, curSeason)}" data-meet="${meetId(m.name, curSeason)}" aria-label="Results for ${esc(m.name)}">Results<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>` : '<span class="muted">—</span>'}</td></tr>`).join("") + "</tbody>";
+        <td>${cx ? `<b class="meet-cancelled">${esc(m.name)}</b> <span class="cancel-tag">Cancelled</span>` : `<b style="color:var(--navy)">${esc(m.name)}</b>`}${hasRes ? ` <a class="res-link res-inline" href="#${meetId(m.name, curSeason)}" data-meet="${meetId(m.name, curSeason)}" aria-label="Results for ${esc(m.name)}">Results<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>` : ""}</td><td>${m.mapUrl ? `<a class="map-link" href="${esc(m.mapUrl)}" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>${esc(m.location || "Map")}</a>` : esc(m.location) || "TBA"}</td>
+        <td class="res-col">${hasRes ? `<a class="res-link" href="#${meetId(m.name, curSeason)}" data-meet="${meetId(m.name, curSeason)}" aria-label="Results for ${esc(m.name)}">Results<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>` : '<span class="muted">—</span>'}</td></tr>`; }).join("") + "</tbody>";
   }
   }
   // Athlete filters (work on the current season's cards)

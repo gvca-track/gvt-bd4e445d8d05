@@ -170,3 +170,7 @@ tr.past td{color:var(--muted)} tr.next td{background:#fbf5e2}
 .th-sort{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font:inherit;color:inherit;padding:6px 4px;margin:-6px -4px;border-radius:6px;min-height:32px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .th-sort:hover{color:var(--navy3)}.th-sort:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .sort-ind{font-size:10px;color:var(--muted);opacity:.6}.th-sort.on .sort-ind{color:var(--gold);opacity:1}.th-sort.on{color:var(--navy)}
+
+/* Cancelled meets on the schedule: muted, subtly struck name + small grey tag */
+.meet-cancelled{color:var(--muted);font-weight:600;text-decoration:line-through;text-decoration-color:rgba(93,107,130,.45)}
+.cancel-tag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;background:#eef0f3;color:#6b7686;font-size:11px;font-weight:600;letter-spacing:.02em;vertical-align:1px}
