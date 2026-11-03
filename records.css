@@ -29,3 +29,10 @@
 @media (max-width:700px){.rec-controls{width:100%}.rec-controls .rec-select,.rec-controls .rec-select select{flex:1;width:100%}.rec-controls .seg{width:100%}.rec-controls .seg button{flex:1}
 .rec-table td,.rec-table th{padding:9px 10px}.rec-table .hide-sm{display:none}.rec-table td.who{white-space:normal;min-width:130px}}
 .tag.odd{background:#fee2e2;color:#991b1b}
+.grade-grid .pr-event{min-width:0;overflow:hidden}
+.grade-grid table{width:100%;table-layout:fixed}
+.grade-grid table td{padding:9px 8px}
+.grade-grid table td.rk{width:40px;padding-left:12px}
+.grade-grid table td.mark{width:78px;text-align:right;white-space:nowrap;padding-right:12px}
+.grade-grid table td.who{min-width:0;overflow-wrap:anywhere}
+.grade-grid table td.who .sub{max-width:none}
