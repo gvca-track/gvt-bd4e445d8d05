@@ -158,13 +158,20 @@ def main():
         })
     historical = [h for h in historical if h["value"] is not None]
 
+    # State qualifying marks (data/qualifying_standards.csv): Event, Gender, Classification, Standard, Season, Source URL.
+    # A blank Standard means unverified; it is kept so the page can flag it.
+    qual = [{"event": q.get("Event", ""), "gender": q.get("Gender", ""), "classification": q.get("Classification", ""),
+             "standard": q.get("Standard", ""), "value": parse_mark(q["Standard"], q.get("Event", "")) if q.get("Standard") else None,
+             "season": q.get("Season", ""), "source": q.get("Source URL", "")}
+            for q in read(d, "qualifying_standards.csv") if q.get("Event")]
+
     out = {
         "team": "Golden View Classical Academy",
         "generated": datetime.now(ZoneInfo("America/Denver")).isoformat(timespec="minutes"),
         "groups": GROUPS,
         "seasons": sorted({season_year(r["season"]) for r in results if season_year(r["season"])}),
         "athletes": athletes, "meets": meets, "results": results, "standards": standards, "historical": historical,
-        "historical": historical,
+        "qualifying": qual,
     }
     dst = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data.json")
     with open(dst, "w") as f: json.dump(out, f, separators=(",", ":"))

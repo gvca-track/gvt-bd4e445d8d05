@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Golden View Track &amp; Field · State Qualifying &amp; Relay Builder</title>
+<meta name="description" content="Golden View Classical Academy Track & Field: season bests vs. CHSAA 2A state qualifying marks, and a relay lineup builder.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="records.css">
+<link rel="stylesheet" href="planning.css">
+<script src="tips.js" defer></script>
+<script src="planning.js" defer></script>
+</head>
+<body class="records-page planning-page">
+<header class="hero">
+  <nav class="topnav">
+    <div class="brand"><span class="crest">GV</span><span>Golden View Track &amp; Field</span></div>
+    <div class="links"><a href="./">Season Tracker</a><a href="meets.html">Meets</a><a href="records.html">School Records</a><a href="planning.html" aria-current="page">State &amp; Relays</a></div>
+  </nav>
+  <div class="hero-inner">
+    <p class="eyebrow">Golden View Classical Academy · Golden, Colorado · CHSAA Class 2A</p>
+    <h1>State &amp;<br><span>Relays</span></h1>
+    <p class="lede">Season bests against the CHSAA 2A state qualifying marks, and suggested relay lineups built from open marks.</p>
+    <div class="season-switch"><label class="rec-select pl-season"><span class="sr-only">Season</span><select id="seasonSel" aria-label="Season"></select></label></div>
+    <div class="hero-meta"><span class="pill" id="seasonPill">Season</span><span class="updated" id="updated"></span></div>
+  </div>
+</header>
+<nav class="secnav" id="secnav" aria-label="Sections">
+  <div class="secnav-inner">
+    <div class="secnav-links" id="secnavLinks">
+      <a href="./" class="nav-back">‹ Season Tracker</a><a href="#close">Close to Qualifying</a><a href="#qualifying">Qualifying Tracker</a><a href="#relays">Relay Builder</a><a href="#notes">Notes</a><a href="records.html" class="nav-ext">Records ›</a>
+    </div>
+    <label class="rec-select pl-season-mini"><span class="sr-only">Season</span><select id="seasonSelMini" aria-label="Season"></select></label>
+  </div>
+</nav>
+
+<main>
+  <section id="close" class="section">
+    <div class="section-head"><div><p class="kicker">Watch List</p><h2>Close to Qualifying</h2></div>
+      <div class="filters"><div class="seg" id="closeGender" role="group" aria-label="Gender"></div><div class="seg" id="closePct" role="group" aria-label="Within"></div></div>
+    </div>
+    <p class="muted rec-hint" id="closeHint"></p>
+    <div id="closeBody"></div>
+  </section>
+
+  <section id="qualifying" class="section">
+    <div class="section-head"><div><p class="kicker">CHSAA 2A</p><h2>Qualifying Tracker</h2></div>
+      <div class="filters rec-controls"><div class="seg" id="qGender" role="group" aria-label="Gender"></div><div class="seg" id="qGroup" role="group" aria-label="Event group"></div></div>
+    </div>
+    <p class="muted rec-hint" id="qHint"></p>
+    <div class="q-grid" id="qBody"></div>
+  </section>
+
+  <section id="relays" class="section">
+    <div class="section-head"><div><p class="kicker">Lineup Planning</p><h2>Relay Builder</h2></div>
+      <div class="filters rec-controls"><label class="rec-select"><span class="sr-only">Relay</span><select id="rRelay" aria-label="Relay"></select></label><div class="seg" id="rGender" role="group" aria-label="Gender"></div></div>
+    </div>
+    <p class="muted rec-hint"><b>Estimate only:</b> combined times add up individual open (flat-start) season bests. Real relay splits differ (rolling starts, exchanges, curves), so treat these as a ranking of options, not a prediction.</p>
+    <div class="card r-pool">
+      <div class="r-pool-head"><h3>Athlete pool</h3><span class="muted r-legend">Tap a name: <span class="chip">available</span> → <span class="chip locked">🔒 locked in</span> → <span class="chip out">excluded</span> <button type="button" class="r-reset" id="rReset">Reset</button></span></div>
+      <div class="r-chips" id="rPool"></div>
+    </div>
+    <div class="r-grid" id="rLineups"></div>
+    <h3 class="r-sub">Actual best relay marks <small class="muted" id="rActualSeason"></small></h3>
+    <div id="rActual"></div>
+  </section>
+
+  <section id="notes" class="section">
+    <div class="section-head"><div><p class="kicker">About the Data</p><h2>Notes</h2></div></div>
+    <div class="card rec-notes" id="notesBody"></div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div><strong>Golden View Classical Academy</strong> · Track &amp; Field · Golden, CO · <a href="./">Season Tracker</a> · <a href="meets.html">Meets</a> · <a href="records.html">School Records</a></div>
+  <div class="muted">Marks: <b>h</b> = hand-timed (ranked with +0.24s under 400m, +0.14s at 400m and up) · wind-aided marks (&gt; +2.0 m/s) are excluded · <b>Q</b> = at or better than the state qualifying mark.</div>
+</footer>
+</body>
+</html>

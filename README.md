@@ -7,6 +7,7 @@ Chart.js and Google Fonts load from CDNs.
 - `index.html`, `styles.css`, `app.js`: the site. `app.js` loads `data.json` and renders everything.
 - `meets.html`: schedule + meet results (same `app.js`, `data-page="meets"`); athlete names open a menu linking to `./?season=YYYY&athlete=Name#athletes` (profile) and `./?athlete=Name&end=YYYY#compare` (Season Comparison filtered, ending season set). Old `index.html#schedule`, `#results`, `#meet-...` links redirect here.
 - `records.html`, `records.js`, `records.css`: the School Records page (records, all-time top 20, by grade/class, most improved, single-season bests). Computed in the browser from the same `data.json`.
+- `planning.html`, `planning.js`, `planning.css`: State & Relays page: season bests vs CHSAA 2A state qualifying marks (`data/qualifying_standards.csv`: Event, Gender, Classification, Standard, Season, Source URL; blank Standard = unverified) and a relay lineup builder (estimates from open season bests; tap athletes to lock/exclude). Supports `?season=`.
 - `tips.js`: shared tap/hover tooltips for both pages.
 - `data.json`: generated data. Don't edit by hand.
 - `build_data.py`: turns CSV exports of the Google Sheet into `data.json`.
